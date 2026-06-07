@@ -1,5 +1,8 @@
 import pandas as pd
 
+PURCHASED_ORDERS = 'purchase_orders.csv'
+CANCELLED_ORDERS = 'canceled_orders.csv'
+
 def split_order_types(df):
     """
     Splits the dataset into:
@@ -20,9 +23,6 @@ def split_order_types(df):
     # Cancelled orders: InvoiceNo starts with C
     cancelled_orders = df[df["InvoiceNo"].astype(str).str.startswith("C")].copy()
 
-    # Returned orders: Quantity is less than 0
-    returned_orders = df[df["Quantity"] < 0].copy()
-
     # Normal purchases only
     purchase_orders = df[
         (~df["InvoiceNo"].astype(str).str.startswith("C")) &
@@ -33,90 +33,98 @@ def split_order_types(df):
     # Convert InvoiceNo to int only for normal purchases
     purchase_orders["InvoiceNo"] = purchase_orders["InvoiceNo"].astype(int)
 
-    return purchase_orders, cancelled_orders, returned_orders
+    return purchase_orders, cancelled_orders
 
-def value(purchase_orders):
-    print("Welcome to Customer Data")
 
-    # Make a copy so the original purchase_orders is not changed by accident
+def create_customer_sales_dataset(purchase_orders):
+    print("Creating customer sales dataset...")
+
     purchase_orders = purchase_orders.copy()
 
-    # Create order value once at the start
-    purchase_orders["OrderValue"] = (
+    # Create row value
+    purchase_orders["RowValue"] = (
         purchase_orders["Quantity"] * purchase_orders["UnitPrice"]
     )
 
-    # Make sure InvoiceDate is datetime once at the start
+    # Convert InvoiceDate
     purchase_orders["InvoiceDate"] = pd.to_datetime(purchase_orders["InvoiceDate"])
 
-    while True:
-        print("\n1. Show total order value")
-        print("2. Show most frequent customers")
-        print("3. Show most recent customers")
-        print("4. Show highest customer spending")
-        print("5. Show customer sales dataset")
-        print("back. Exit menu")
+    # First create order-level totals
+    order_values = (purchase_orders.groupby(["CustomerID", "InvoiceNo"])
+        .agg(
+            InvoiceDate=("InvoiceDate", "max"),
+            OrderValue=("RowValue", "sum"),
+            TotalQuantity=("Quantity", "sum")
+        ).reset_index())
 
-        question = input("Enter Your Choice: ").lower()
+    # Reference date for recency
+    reference_date = order_values["InvoiceDate"].max() + pd.Timedelta(days=1)
 
-        if question == "1":
-            print(purchase_orders[["InvoiceNo", "CustomerID", "OrderValue"]].head())
+    # Create one row per customer
+    customer_sales_data = (order_values.groupby("CustomerID")
+        .agg(Frequency=("InvoiceNo", "nunique"),
+            Recency=("InvoiceDate", lambda x: (reference_date - x.max()).days),
+            MonetaryValue=("OrderValue", "sum"),
+            AverageOrderValue=("OrderValue", "mean"),
+            TotalQuantity=("TotalQuantity", "sum")
+        ).reset_index())
 
-        elif question == "2":
-            frequency_customer = (purchase_orders.groupby("CustomerID")["InvoiceNo"].nunique().reset_index())
+    # Round money columns
+    money_columns = ["MonetaryValue", "AverageOrderValue"]
 
-            frequency_customer = frequency_customer.rename(columns={"InvoiceNo": "Frequency"})
+    customer_sales_data[money_columns] = customer_sales_data[money_columns].round(2)
 
-            most_frequent_customers = frequency_customer.sort_values(by="Frequency",ascending=False)
+    # Save to CSV
+    customer_sales_data.to_csv("customer_order_sales_data.csv",index=False,float_format="%.2f")
 
-            print(most_frequent_customers.head())
+    print(customer_sales_data.head())
+    print("customer_order_sales_data.csv has been created.")
 
-        elif question == "3":
-            reference_date = purchase_orders["InvoiceDate"].max() + pd.Timedelta(days=1)
+    return customer_sales_data
 
-            recency_customer = (purchase_orders.groupby("CustomerID")["InvoiceDate"].max().reset_index())
+def customer_sales_data(purchase_orders):
+    print("Welcome to Customer Data")
 
-            recency_customer["Recency"] = (reference_date - recency_customer["InvoiceDate"]).dt.days
+    # Make a copy so the original dataset is safe
+    purchase_orders = purchase_orders.copy()
 
-            recency_customer = recency_customer.drop(columns=["InvoiceDate"])
+    # Create value for each product row
+    purchase_orders["RowValue"] = (purchase_orders["Quantity"] * purchase_orders["UnitPrice"])
 
-            # Most recent customers have the LOWEST recency
-            recency_sort_values = recency_customer.sort_values(by="Recency",ascending=True)
+    # Convert InvoiceDate to datetime
+    purchase_orders["InvoiceDate"] = pd.to_datetime(purchase_orders["InvoiceDate"])
 
-            print(recency_sort_values.head())
+    # Create total value for each order/invoice
+    order_values = (purchase_orders.groupby(["CustomerID", "InvoiceNo"]).agg(InvoiceDate=("InvoiceDate", "max"),OrderValue=("RowValue", "sum")).reset_index()).round(2)
 
-        elif question == "4":
-            monetary_customer = (purchase_orders.groupby("CustomerID")["OrderValue"].sum().reset_index())
+    # Sort by customer and date so running totals work correctly
+    order_values = order_values.sort_values(by=["CustomerID", "InvoiceDate", "InvoiceNo"])
 
-            monetary_customer = monetary_customer.rename(columns={"OrderValue": "MonetaryValue"})
+    # MonetaryValue: running total spent by the customer
+    order_values["MonetaryValue"] = (order_values.groupby("CustomerID")["OrderValue"].cumsum()).round(2)
 
-            sorted_monetary_customer = monetary_customer.sort_values(by="MonetaryValue",ascending=False)
+    # AverageOrderValue: running average spend per order
+    order_values["AverageOrderValue"] = (order_values["MonetaryValue"] / len(order_values)).round(2)
 
-            print(sorted_monetary_customer.head())
+    # Keep columns in the order you want
+    customer_sales_data = order_values[
+        [
+            "CustomerID",
+            "InvoiceNo",
+            "InvoiceDate",
+            "MonetaryValue",
+            "AverageOrderValue",
+            "OrderValue"
+        ]
+    ]
 
-        elif question == "5":
-            customer_sales = (purchase_orders.groupby("CustomerID").agg(Frequency=("InvoiceNo", "nunique"),
-                    MonetaryValue=("OrderValue", "sum"),
-                    TotalQuantity=("Quantity", "sum"),
-                    LastPurchaseDate=("InvoiceDate", "max")).reset_index())
+    # Save to CSV
+    customer_sales_data.to_csv("customer_sales_data.csv", index=False)
 
-            customer_sales["AverageOrderValue"] = (customer_sales["MonetaryValue"] / customer_sales["Frequency"])
+    print(customer_sales_data.head())
+    print("customer_sales_data.csv has been created.")
 
-            reference_date = purchase_orders["InvoiceDate"].max() + pd.Timedelta(days=1)
-
-            customer_sales["Recency"] = (reference_date - customer_sales["LastPurchaseDate"]).dt.days
-
-            customer_sales = customer_sales.drop(columns=["LastPurchaseDate"])
-
-            print(customer_sales.head())
-
-        elif question == "back":
-            print("Going back...")
-            break
-
-        else:
-            print("Invalid choice. Please enter 1, 2, 3, 4, 5, or back.")
-
+    return customer_sales_data
 
 dataset = pd.read_csv('customer_segmentation_data.csv', encoding="cp1252")
 
@@ -142,15 +150,13 @@ dataset["CustomerID"] = dataset["CustomerID"].astype(int)
 df = pd.DataFrame(dataset)
 
 #using the function we can split all of data to make the cancelled, returned and normal orders into different datasets
-purchase_orders, cancelled_orders, returned_orders = split_order_types(dataset)
+purchase_orders, cancelled_orders = split_order_types(dataset)
 
 print("Purchase orders:", len(purchase_orders))
 print("Cancelled orders:", len(cancelled_orders))
-print("Returned orders:", len(returned_orders))
 
 purchase_orders.to_csv("purchase_orders.csv", index=False)
 cancelled_orders.to_csv("cancelled_orders.csv", index=False)
-returned_orders.to_csv("returned_orders.csv", index=False)
 
 print(df.columns)
 
@@ -161,4 +167,6 @@ while True:
         print("Please enter a number.")
         continue
     if question == 1:
-        value(purchase_orders)
+        create_customer_sales_dataset(purchase_orders)
+    elif question == 2:
+        customer_sales_data(purchase_orders)
