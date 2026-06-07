@@ -17,6 +17,8 @@ def split_order_types(df):
     # Fill missing descriptions
     df["Description"] = df["Description"].fillna("Unknown")
 
+    df['Country'] = df['Country'].astype('category').cat.codes
+
     # Remove rows with missing CustomerID
     df = df.dropna(subset=["CustomerID"]).copy()
 
@@ -36,15 +38,13 @@ def split_order_types(df):
     return purchase_orders, cancelled_orders
 
 
-def create_customer_sales_dataset(purchase_orders):
+def create_customer_order_sales_dataset(purchase_orders):
     print("Creating customer sales dataset...")
 
     purchase_orders = purchase_orders.copy()
 
     # Create row value
-    purchase_orders["RowValue"] = (
-        purchase_orders["Quantity"] * purchase_orders["UnitPrice"]
-    )
+    purchase_orders["RowValue"] = (purchase_orders["Quantity"] * purchase_orders["UnitPrice"])
 
     # Convert InvoiceDate
     purchase_orders["InvoiceDate"] = pd.to_datetime(purchase_orders["InvoiceDate"])
@@ -95,7 +95,7 @@ def customer_sales_data(purchase_orders):
     purchase_orders["InvoiceDate"] = pd.to_datetime(purchase_orders["InvoiceDate"])
 
     # Create total value for each order/invoice
-    order_values = (purchase_orders.groupby(["CustomerID", "InvoiceNo"]).agg(InvoiceDate=("InvoiceDate", "max"),OrderValue=("RowValue", "sum")).reset_index()).round(2)
+    order_values = (purchase_orders.groupby(["CustomerID", "InvoiceNo"]).agg(InvoiceDate=("InvoiceDate", "max"),Country=("Country", "first"),OrderValue=("RowValue", "sum")).reset_index()).round(2)
 
     # Sort by customer and date so running totals work correctly
     order_values = order_values.sort_values(by=["CustomerID", "InvoiceDate", "InvoiceNo"])
@@ -114,6 +114,7 @@ def customer_sales_data(purchase_orders):
             "InvoiceDate",
             "MonetaryValue",
             "AverageOrderValue",
+            "Country",
             "OrderValue"
         ]
     ]
@@ -167,6 +168,6 @@ while True:
         print("Please enter a number.")
         continue
     if question == 1:
-        create_customer_sales_dataset(purchase_orders)
+        create_customer_order_sales_dataset(purchase_orders)
     elif question == 2:
         customer_sales_data(purchase_orders)
