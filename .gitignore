@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ﻿.venv/
 .idea/
 __pycache__/
@@ -5,3 +6,16 @@ __pycache__/
 .ipynb_checkpoints/
 .env
 .DS_Store
+=======
+core.Microsoft*
+core.mongo*
+core.python*
+env.py
+__pycache__/
+*.py[cod]
+node_modules/
+.github/
+cloudinary_python.txt
+kaggle.json
+.venv/
+>>>>>>> 57061f7eebe2f28c8a8411c53bfc8c2c4465a211
