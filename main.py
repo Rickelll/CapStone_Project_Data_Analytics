@@ -14,13 +14,17 @@ def split_order_types(df):
     # Make a copy so we do not damage the original dataset
     df = df.copy()
 
+
     # Fill missing descriptions
     df["Description"] = df["Description"].fillna("Unknown")
 
     df['Country'] = df['Country'].astype('category').cat.codes
 
+
     # Remove rows with missing CustomerID
     df = df.dropna(subset=["CustomerID"]).copy()
+
+    df['CustomerID'] = df['CustomerID'].astype(int)
 
     # Cancelled orders: InvoiceNo starts with C
     cancelled_orders = df[df["InvoiceNo"].astype(str).str.startswith("C")].copy()
@@ -34,6 +38,8 @@ def split_order_types(df):
 
     # Convert InvoiceNo to int only for normal purchases
     purchase_orders["InvoiceNo"] = purchase_orders["InvoiceNo"].astype(int)
+
+
 
     return purchase_orders, cancelled_orders
 
