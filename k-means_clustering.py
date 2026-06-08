@@ -2,6 +2,7 @@ import pandas as pd
 from sklearn.cluster import KMeans
 from sklearn.preprocessing import StandardScaler
 
+
 dataset = pd.read_csv('customer_order_sales_data.csv')
 
 #checking min and max frequency to be able see a good range
@@ -46,3 +47,16 @@ def percentile_customer_based_segmentation(dataset):
     print(dataset.columns)
 
 percentile_customer_based_segmentation(dataset)
+
+status_mapping ={
+    "VIP": 5,
+    "Loyal": 4,
+    "Risk": 3,
+    "New": 2,
+    "Inactive": 1
+}
+
+dataset['Customer_Status'] = dataset['Customer_Status'].map(status_mapping)
+
+df = pd.DataFrame(dataset)
+print(df.dtypes)
