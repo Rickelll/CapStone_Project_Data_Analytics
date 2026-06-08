@@ -8,37 +8,96 @@ canceled_orders = pd.read_csv("cancelled_orders.csv")
 
 print(purchase_orders.columns)
 def revenue(purchase_orders, canceled_orders):
-    #Total Revenue from valid purchases, order_total from purchases - cancelled_orders_total from cancelled
-    total_revenue_purchases = purchase_orders['Quantity'] * purchase_orders['UnitPrice']
+    # Create revenue values for each row
+    total_revenue_purchases = purchase_orders["Quantity"] * purchase_orders["UnitPrice"]
+    canceled_revenue_orders = canceled_orders["Quantity"] * canceled_orders["UnitPrice"]
 
-    canceled_revenue_orders = canceled_orders['Quantity'] * canceled_orders['UnitPrice']
+    # Total revenue values
+    purchase_revenue = total_revenue_purchases.sum()
+    canceled_revenue = canceled_revenue_orders.sum()
 
-    #Because the quantity in the datasets are negative we have to add them to the total revenue
-    total_revenue = total_revenue_purchases.sum() + canceled_revenue_orders.sum()
-    print("Revenue of Purchase Orders:", total_revenue_purchases.sum())
-    print("Revenue of Canceled Orders:", canceled_revenue_orders.sum())
-    print("Net Revenue: ", total_revenue.round(2))
+    # Cancelled orders are negative, so adding them gives net revenue
+    net_revenue = purchase_revenue + canceled_revenue
 
-    # average order value
-    average_order_purchased_value = total_revenue_purchases.sum() / purchase_orders['InvoiceNo'].nunique()
+    print("Revenue of Purchase Orders:", round(purchase_revenue, 2))
+    print("Revenue of Canceled Orders:", round(canceled_revenue, 2))
+    print("Net Revenue:", round(net_revenue, 2))
 
-    average_order_canceled_value = abs(canceled_revenue_orders.sum()) / canceled_orders['InvoiceNo'].nunique()
+    # Average purchase invoice value
+    average_order_purchased_value = purchase_revenue / purchase_orders["InvoiceNo"].nunique()
 
-    total_invoices = purchase_orders['InvoiceNo'].nunique() + canceled_orders['InvoiceNo'].nunique()
+    # Average cancelled invoice value, shown as positive
+    average_order_canceled_value = abs(canceled_revenue) / canceled_orders["InvoiceNo"].nunique()
 
-    average_order_value_sum = total_revenue.sum() / total_invoices
+    # Net average invoice value
+    total_invoices = (
+        purchase_orders["InvoiceNo"].nunique()
+        + canceled_orders["InvoiceNo"].nunique()
+    )
 
-    print("Average Order Purchased Value:", average_order_purchased_value.round(2))
-    print("Average Order Canceled Value:", average_order_canceled_value.round(2))
+    net_average_invoice_value = net_revenue / total_invoices
+
+    print("Average Order Purchased Value:", round(average_order_purchased_value, 2))
+    print("Average Order Canceled Value:", round(average_order_canceled_value, 2))
     print("Total Invoices:", total_invoices)
-    print("Average Order Value:", average_order_value_sum.round(2))
-    return total_revenue
+    print("Net Average Invoice Value:", round(net_average_invoice_value, 2))
 
-#average order value
+    # Highest and lowest invoice values, not row values
+    purchase_orders = purchase_orders.copy()
+    purchase_orders["RowValue"] = purchase_orders["Quantity"] * purchase_orders["UnitPrice"]
+
+    invoice_purchased_values = (purchase_orders
+        .groupby("InvoiceNo")["RowValue"]
+        .sum()
+        .reset_index(name="InvoiceValue")
+    )
 
 
+    canceled_orders = canceled_orders.copy()
+    canceled_orders["RowValue"] = canceled_orders["Quantity"] * canceled_orders["UnitPrice"]
 
-#highest and lowest sales
+    invoice_canceled_values = (canceled_orders
+        .groupby("InvoiceNo")["RowValue"]
+        .sum()
+        .reset_index(name="CancelledInvoiceValue")
+    )
+
+    biggest_sale = invoice_purchased_values["InvoiceValue"].max()
+    smallest_sale = invoice_purchased_values["InvoiceValue"].min()
+
+    smallest_canceled = abs(invoice_canceled_values["CancelledInvoiceValue"].max())
+    biggest_canceled = abs(invoice_canceled_values["CancelledInvoiceValue"].min())
+
+    print("Biggest Purchase Invoice:", round(biggest_sale, 2))
+    print("Smallest Purchase Invoice:", round(smallest_sale, 2))
+
+    print("Biggest Canceled Invoice:", round(biggest_canceled, 2))
+    print("Smallest Canceled Invoice:", round(smallest_canceled, 2))
+
+    biggest_purchase_invoice_max = invoice_purchased_values.sort_values(
+        by="InvoiceValue", ascending=False
+    ).head(5)
+
+    biggest_purchase_invoice = invoice_purchased_values.sort_values(
+        by="InvoiceValue", ascending=True
+    ).head(5)
+    print(biggest_purchase_invoice_max)
+    print(biggest_purchase_invoice)
+
+    biggest_canceled_invoice_max = invoice_canceled_values.sort_values(
+        by="CancelledInvoiceValue", ascending=False
+    ).head(5)
+
+    biggest_canceled_invoice = invoice_canceled_values.sort_values(
+        by="CancelledInvoiceValue", ascending=True
+    ).head(5)
+    print(biggest_canceled_invoice_max)
+    print(biggest_canceled_invoice)
+    #The largest invoice values were treated as outliers because the top purchase invoices had matching cancellation invoices with the same values. For example, invoice 581483 had a value of €168,469.60 and was followed by cancellation invoice C581484 with a value of -€168,469.60. This shows why net revenue is more reliable than gross revenue when analysing sales performance.
+    #After some further inspection during this stage some orders were canceled after so the base case action it make clean the data by removing matching invoice numbers from purchased and canceled orders
+    #Remove fully cancelled purchases so reversed orders do not distort sales metrics or clustering.
+    return net_revenue
+
 
 #are sales increasing or decreasing overitme
 
