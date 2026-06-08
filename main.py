@@ -2,6 +2,7 @@ import pandas as pd
 
 PURCHASED_ORDERS = 'purchase_orders.csv'
 CANCELED_ORDERS = 'cancelled_orders.csv'
+CLEANED_PURCHASED_ORDERS = "completed_purchase_orders.csv"
 
 def split_order_types(df):
     """
@@ -43,22 +44,125 @@ def split_order_types(df):
 
     return purchase_orders, cancelled_orders
 
-def completed_purchases(purchased_orders, cancelled_orders):
-
-    purchased_orders = pd.read_csv(purchased_orders)
-    cancelled_orders = pd.read_csv(cancelled_orders)
+def completed_purchases(purchased_orders_csv, cancelled_orders_csv):
+    purchased_orders = pd.read_csv(purchased_orders_csv)
+    cancelled_orders = pd.read_csv(cancelled_orders_csv)
 
     purchased_orders = purchased_orders.copy()
-
     cancelled_orders = cancelled_orders.copy()
 
-    print(purchased_orders['InvoiceNo'].head(5))
-    print(cancelled_orders['InvoiceNo'].head(5))
+    # Create row values
+    purchased_orders["RowValue"] = (
+        purchased_orders["Quantity"] * purchased_orders["UnitPrice"]
+    )
 
-    print(purchased_orders.columns)
-    print(cancelled_orders.columns)
+    cancelled_orders["RowValue"] = (
+        cancelled_orders["Quantity"] * cancelled_orders["UnitPrice"]
+    )
+
+    # Keep original InvoiceNo, but create clean version for cancelled orders
+    purchased_orders["CleanInvoiceNo"] = purchased_orders["InvoiceNo"].astype(str)
+
+    #Removes the C at the begining of cancelled orders
+    cancelled_orders["CleanInvoiceNo"] = (
+        cancelled_orders["InvoiceNo"]
+        .astype(str)
+        .str.replace("^C", "", regex=True)
+    )
+
+    # Convert dates
+    purchased_orders["InvoiceDate"] = pd.to_datetime(purchased_orders["InvoiceDate"])
+    cancelled_orders["InvoiceDate"] = pd.to_datetime(cancelled_orders["InvoiceDate"])
+
+    # Invoice-level purchase values
+    purchased_invoice_values = (
+        purchased_orders
+        .groupby(["CustomerID", "InvoiceNo"])
+        .agg(
+            PurchaseDate=("InvoiceDate", "max"),
+            PurchaseInvoiceValue=("RowValue", "sum")
+        )
+        .reset_index()
+    )
+
+    # Invoice-level cancelled values
+    cancelled_invoice_values = (
+        cancelled_orders
+        .groupby(["CustomerID", "InvoiceNo"])
+        .agg(
+            CancelledDate=("InvoiceDate", "max"),
+            CancelledInvoiceValue=("RowValue", "sum")
+        )
+        .reset_index()
+    )
+
+    # Make cancelled value positive for matching
+    cancelled_invoice_values["CancelledInvoiceValueAbs"] = (
+        cancelled_invoice_values["CancelledInvoiceValue"].abs()
+    )
+
+    # Round values to avoid tiny decimal problems
+    purchased_invoice_values["MatchValue"] = (
+        purchased_invoice_values["PurchaseInvoiceValue"].round(2)
+    )
+
+    cancelled_invoice_values["MatchValue"] = (
+        cancelled_invoice_values["CancelledInvoiceValueAbs"].round(2)
+    )
+
+    # Sort before matching
+    purchased_invoice_values = purchased_invoice_values.sort_values(
+        by=["CustomerID", "MatchValue", "PurchaseDate"]
+    )
+
+    cancelled_invoice_values = cancelled_invoice_values.sort_values(
+        by=["CustomerID", "MatchValue", "CancelledDate"]
+    )
+
+    # Prevent duplicate many-to-many matches
+    purchased_invoice_values["MatchNumber"] = (
+        purchased_invoice_values
+        .groupby(["CustomerID", "MatchValue"])
+        .cumcount()
+    )
+
+    cancelled_invoice_values["MatchNumber"] = (
+        cancelled_invoice_values
+        .groupby(["CustomerID", "MatchValue"])
+        .cumcount()
+    )
+
+    # Match reversed purchases
+    matched_reversed_invoices = purchased_invoice_values.merge(
+        cancelled_invoice_values,
+        on=["CustomerID", "MatchValue", "MatchNumber"],
+        how="inner",
+        suffixes=("_purchase", "_cancelled")
+    )
+
+    # Keep only cancellations that happened after the purchase
+    matched_reversed_invoices = matched_reversed_invoices[
+        matched_reversed_invoices["CancelledDate"] >= matched_reversed_invoices["PurchaseDate"]
+    ]
+
+    # Get purchase invoice numbers that were reversed
+    reversed_purchase_invoice_numbers = matched_reversed_invoices["InvoiceNo_purchase"]
+
+    # Remove reversed purchase invoices from completed purchases
+    completed_purchase_orders = purchased_orders[
+        ~purchased_orders["InvoiceNo"].isin(reversed_purchase_invoice_numbers)
+    ].copy()
+
+    # Save separate CSV files
+    matched_reversed_invoices.to_csv("matched_reversed_invoices.csv", index=False)
+    completed_purchase_orders.to_csv("completed_purchase_orders.csv", index=False)
+
     print("Completed purchases")
+    print("Reversed purchase invoices found:", len(reversed_purchase_invoice_numbers))
+    print("Purchase rows before:", len(purchased_orders))
+    print("Purchase rows after:", len(completed_purchase_orders))
 
+    return completed_purchase_orders, matched_reversed_invoices
 
 def create_customer_order_sales_dataset(purchase_orders):
     print("Creating customer sales dataset...")
@@ -234,11 +338,12 @@ purchase_orders, cancelled_orders = split_order_types(dataset)
 purchase_orders.to_csv("purchase_orders.csv", index=False)
 cancelled_orders.to_csv("cancelled_orders.csv", index=False)
 
+cleaned_purchased_orders = pd.read_csv(CLEANED_PURCHASED_ORDERS, encoding="cp1252")
 
 if __name__ == "__main__":
-    create_customer_order_sales_dataset(purchase_orders)
+    create_customer_order_sales_dataset(cleaned_purchased_orders)
 
-    sales_data = customer_sales_data(purchase_orders)
+    sales_data = customer_sales_data(cleaned_purchased_orders)
 
     create_regression_data(sales_data)
 

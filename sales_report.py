@@ -5,9 +5,10 @@ from main import cancelled_orders
 #Reading the datasets
 purchase_orders = pd.read_csv("purchase_orders.csv")
 canceled_orders = pd.read_csv("cancelled_orders.csv")
+completed_purchases = pd.read_csv("completed_purchase_orders.csv")
 
 print(purchase_orders.columns)
-def revenue(purchase_orders, canceled_orders):
+def revenue(purchase_orders, canceled_orders, completed_purchases):
     # Create revenue values for each row
     total_revenue_purchases = purchase_orders["Quantity"] * purchase_orders["UnitPrice"]
     canceled_revenue_orders = canceled_orders["Quantity"] * canceled_orders["UnitPrice"]
@@ -94,7 +95,7 @@ def revenue(purchase_orders, canceled_orders):
     print(biggest_canceled_invoice_max)
     print(biggest_canceled_invoice)
     #The largest invoice values were treated as outliers because the top purchase invoices had matching cancellation invoices with the same values. For example, invoice 581483 had a value of €168,469.60 and was followed by cancellation invoice C581484 with a value of -€168,469.60. This shows why net revenue is more reliable than gross revenue when analysing sales performance.
-    #After some further inspection during this stage some orders were canceled after so the base case action it make clean the data by removing matching invoice numbers from purchased and canceled orders
+    #After some further inspection during this stage some orders were canceled after so the base case action it make clean the data by removing matching order values and having one more invoice from purchased and canceled orders
     #Remove fully cancelled purchases so reversed orders do not distort sales metrics or clustering.
     return net_revenue
 
@@ -105,4 +106,4 @@ def revenue(purchase_orders, canceled_orders):
 
 
 
-revenue(purchase_orders, canceled_orders)
+revenue(purchase_orders, canceled_orders, completed_purchases)
