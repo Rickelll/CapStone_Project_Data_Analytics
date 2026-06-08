@@ -1,5 +1,6 @@
 import pandas as pd
-
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.model_selection import train_test_split
 
 dataset = pd.read_csv("customer_regression_data.csv")
 
@@ -7,10 +8,19 @@ print(dataset.head())
 
 print(dataset.columns)
 
+#The regression model does not use CustomerID, InvoiceNo, current MonetaryValue, or current AverageOrderValue as learning features. These columns are either identifiers or contain information from the current order. Instead, the model uses previous customer behaviour, such as previous monetary value, previous average order value, previous order count, previous order value, days since previous order, and country, to predict the current order value.
 X_features = ["PreviousMonetaryValue", "PreviousAverageOrderValue", "PreviousOrderCount", "PreviousOrderValue"]
 
+#X is our training data and Y is our target data
 X = dataset[X_features].values
 y = dataset.iloc[:, -1].values
 
 print(X)
 print(y)
+
+#Splitting our training data for Random Forest Regression
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2, random_state = 0)
+
+#Training our model
+regressor = RandomForestRegressor(n_estimators=100, random_state=42)
+regressor.fit(X_train, y_train)
