@@ -1,7 +1,7 @@
 import pandas as pd
 
 PURCHASED_ORDERS = 'purchase_orders.csv'
-CANCELLED_ORDERS = 'canceled_orders.csv'
+CANCELED_ORDERS = 'cancelled_orders.csv'
 
 def split_order_types(df):
     """
@@ -42,6 +42,23 @@ def split_order_types(df):
 
 
     return purchase_orders, cancelled_orders
+
+def completed_purchases(purchased_orders, cancelled_orders):
+
+    purchased_orders = pd.read_csv(purchased_orders)
+    cancelled_orders = pd.read_csv(cancelled_orders)
+
+    purchased_orders = purchased_orders.copy()
+
+    cancelled_orders = cancelled_orders.copy()
+
+    print(purchased_orders['InvoiceNo'].head(5))
+    print(cancelled_orders['InvoiceNo'].head(5))
+
+    print(purchased_orders.columns)
+    print(cancelled_orders.columns)
+    print("Completed purchases")
+
 
 def create_customer_order_sales_dataset(purchase_orders):
     print("Creating customer sales dataset...")
@@ -224,3 +241,5 @@ if __name__ == "__main__":
     sales_data = customer_sales_data(purchase_orders)
 
     create_regression_data(sales_data)
+
+    completed_purchases(PURCHASED_ORDERS, CANCELED_ORDERS)
