@@ -1,5 +1,5 @@
 import pandas as pd
-
+import matplotlib.pyplot as plt
 from main import cancelled_orders
 
 #Reading the datasets
@@ -7,7 +7,6 @@ purchase_orders = pd.read_csv("purchase_orders.csv")
 canceled_orders = pd.read_csv("cancelled_orders.csv")
 completed_purchases = pd.read_csv("completed_purchase_orders.csv")
 
-print(purchase_orders.columns)
 def revenue(purchase_orders, canceled_orders, completed_purchases):
     # Create revenue values for each row
     total_revenue_purchases = purchase_orders["Quantity"] * purchase_orders["UnitPrice"]
@@ -38,8 +37,15 @@ def revenue(purchase_orders, canceled_orders, completed_purchases):
 
     net_average_invoice_value = net_revenue / total_invoices
 
+    # Completed purchases
+    completed_purchases_order = completed_purchases["Quantity"] * completed_purchases["UnitPrice"]
+
+    # Average completed purchase invoice value
+    average_completed_purchase_invoice_value = (completed_purchases_order.sum() / completed_purchases["InvoiceNo"].nunique())
+
     print("Average Order Purchased Value:", round(average_order_purchased_value, 2))
     print("Average Order Canceled Value:", round(average_order_canceled_value, 2))
+    print("Average Completed Purchases Orders:", round(average_completed_purchase_invoice_value, 2))
     print("Total Invoices:", total_invoices)
     print("Net Average Invoice Value:", round(net_average_invoice_value, 2))
 
@@ -75,35 +81,91 @@ def revenue(purchase_orders, canceled_orders, completed_purchases):
     print("Biggest Canceled Invoice:", round(biggest_canceled, 2))
     print("Smallest Canceled Invoice:", round(smallest_canceled, 2))
 
-    biggest_purchase_invoice_max = invoice_purchased_values.sort_values(
-        by="InvoiceValue", ascending=False
-    ).head(5)
-
-    biggest_purchase_invoice = invoice_purchased_values.sort_values(
-        by="InvoiceValue", ascending=True
-    ).head(5)
-    print(biggest_purchase_invoice_max)
-    print(biggest_purchase_invoice)
-
-    biggest_canceled_invoice_max = invoice_canceled_values.sort_values(
-        by="CancelledInvoiceValue", ascending=False
-    ).head(5)
-
-    biggest_canceled_invoice = invoice_canceled_values.sort_values(
-        by="CancelledInvoiceValue", ascending=True
-    ).head(5)
-    print(biggest_canceled_invoice_max)
-    print(biggest_canceled_invoice)
     #The largest invoice values were treated as outliers because the top purchase invoices had matching cancellation invoices with the same values. For example, invoice 581483 had a value of €168,469.60 and was followed by cancellation invoice C581484 with a value of -€168,469.60. This shows why net revenue is more reliable than gross revenue when analysing sales performance.
     #After some further inspection during this stage some orders were canceled after so the base case action it make clean the data by removing matching order values and having one more invoice from purchased and canceled orders
     #Remove fully cancelled purchases so reversed orders do not distort sales metrics or clustering.
+
+    #Over 148 purchases weren't completed and put into a separate csv file called matched_reversed_invoices
+
+    #After removing purchase invoices that appeared to be fully reversed by cancellation invoices, the largest completed purchase invoice was €31,698.16. This gives a more realistic view of completed sales activity than the original gross purchase dataset, where the largest invoice was later cancelled.
+
+    #The average recorded purchase invoice value was €480.87. After removing purchase invoices that appeared to be fully reversed by cancellation invoices, the average completed purchase invoice value was €464.75. This cleaned value gives a more realistic view of successful customer purchases and was used for customer behaviour analysis and clustering.
+    print(completed_purchases.columns)
+
     return net_revenue
 
 
 #are sales increasing or decreasing overitme
+def sales_over_time(completed_purchases):
+    print("Sales Over Time")
 
+    completed_purchases = completed_purchases.copy()
+
+    # Make sure InvoiceDate is datetime
+    completed_purchases["InvoiceDate"] = pd.to_datetime(completed_purchases["InvoiceDate"])
+
+    # Create value for each row
+    completed_purchases["RowValue"] = (completed_purchases["Quantity"] * completed_purchases["UnitPrice"])
+
+    # Create month column
+    completed_purchases["Month"] = (
+        completed_purchases["InvoiceDate"]
+        .dt.to_period("M")
+        .dt.to_timestamp()
+    )
+
+    monthly_sales = (
+        completed_purchases
+        .groupby("Month")
+        .agg(
+            MonthlyRevenue=("RowValue", "sum"),
+            TotalInvoices=("InvoiceNo", "nunique")
+        )
+        .reset_index())
+
+    # Average invoice value per month
+    monthly_sales["AverageInvoiceValue"] = (monthly_sales["MonthlyRevenue"] / monthly_sales["TotalInvoices"])
+
+    # Round values
+    monthly_sales["MonthlyRevenue"] = monthly_sales["MonthlyRevenue"].round(2)
+    monthly_sales["AverageInvoiceValue"] = monthly_sales["AverageInvoiceValue"].round(2)
+
+    # Compare first month to last month
+    monthly_sales_complete = monthly_sales.iloc[:-1]
+
+    print(monthly_sales_complete["MonthlyRevenue"])
+
+    first_month_revenue = monthly_sales_complete["MonthlyRevenue"].iloc[0]
+    last_month_revenue = monthly_sales_complete["MonthlyRevenue"].iloc[-1]
+
+    revenue_change = last_month_revenue - first_month_revenue
+    percentage_change = (revenue_change / first_month_revenue) * 100
+
+    print("First Month Revenue:", round(first_month_revenue, 2))
+    print("Last Month Revenue:", round(last_month_revenue, 2))
+    print("Revenue Change:", round(revenue_change, 2))
+    print("Percentage Change:", round(percentage_change, 2), "%")
+
+    if revenue_change > 0:
+        print("Sales increased over time.")
+    elif revenue_change < 0:
+        print("Sales decreased over time.")
+    else:
+        print("Sales stayed the same over time.")
+
+    plt.figure(figsize=(10, 5))
+    plt.plot(monthly_sales_complete["Month"], monthly_sales_complete["MonthlyRevenue"], marker="o")
+    plt.title("Monthly Sales Revenue Over Time")
+    plt.xlabel("Month")
+    plt.ylabel("Revenue")
+    plt.xticks(rotation=45)
+    plt.tight_layout()
+    plt.show()
+
+    return monthly_sales
+    #Sales revenue increased by 105.75% between the first recorded month and the last complete month. The final month was excluded from the trend comparison because it appeared incomplete and caused a misleading drop in the graph.
+    #Monthly sales revenue increased by 105.75% between the first complete month and the last complete month analysed. Sales fluctuated during the early months, but revenue increased strongly from September to November, reaching the highest monthly revenue in November. The final incomplete month was excluded to avoid misleading the trend analysis.
 #best months and worst months
 
 
-
-revenue(purchase_orders, canceled_orders, completed_purchases)
+sales_over_time(completed_purchases)

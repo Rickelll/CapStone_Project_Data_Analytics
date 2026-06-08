@@ -101,3 +101,4 @@ print(classification_report(df["Customer_Status"], df["Predicted_Status"]))
 
 
 #The K-Means model achieved a silhouette score of 0.60, suggesting that the customer groups are reasonably well separated. However, when compared against the existing Customer_Status label, the clusters only achieved 64.94% agreement. This shows that the natural customer groups found by K-Means do not fully match the manually assigned customer status categories.
+#After removing fully reversed purchase invoices, the K-Means cluster comparison score slightly decreased. However, the cleaned dataset was considered more reliable because reversed transactions no longer inflated customer value. Since K-Means is an unsupervised method, the customer status accuracy score was used only as a comparison measure, not as the main measure of model success.
