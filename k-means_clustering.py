@@ -1,7 +1,7 @@
 import pandas as pd
 from sklearn.cluster import KMeans
 from sklearn.preprocessing import StandardScaler
-
+from sklearn.metrics import silhouette_score, confusion_matrix, classification_report
 
 dataset = pd.read_csv('customer_order_sales_data.csv')
 
@@ -75,14 +75,29 @@ df['Cluster'] = kmeans.fit_predict(scaled_data)
 
 print("K Means clustering completed......")
 print(df, "<======= clustered data")
-print(df[["CustomerID",
-    "Frequency",
-    "Recency",
-    "AverageOrderValue",
-    "MonetaryValue",
-    "Customer_Status",
-    "Cluster"
-]].head(20))
+print(df[["CustomerID","Frequency","Recency","AverageOrderValue","MonetaryValue","Customer_Status","Cluster"]].head(20))
 
 print(pd.crosstab(df["Customer_Status"], df["Cluster"]))
 
+cluster_map = (df.groupby("Cluster")["Customer_Status"]
+               .agg(lambda x: x.value_counts().idxmax())
+               .to_dict()
+               )
+
+df["Predicted_Status"] = df["Cluster"].map(cluster_map)
+
+accuracy = (df["Predicted_Status"] == df["Customer_Status"]).mean()
+
+print("Cluster mapping:", cluster_map)
+print("Accuracy:", round(accuracy * 100, 2), "%")
+
+#silhouette score
+score = silhouette_score(scaled_data, df["Cluster"])
+print("Silhouette Score:", score)
+
+#Confusion Matrix
+print(confusion_matrix(df["Customer_Status"], df["Predicted_Status"]))
+print(classification_report(df["Customer_Status"], df["Predicted_Status"]))
+
+
+#The K-Means model achieved a silhouette score of 0.60, suggesting that the customer groups are reasonably well separated. However, when compared against the existing Customer_Status label, the clusters only achieved 64.94% agreement. This shows that the natural customer groups found by K-Means do not fully match the manually assigned customer status categories.
