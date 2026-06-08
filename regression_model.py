@@ -6,6 +6,8 @@ import numpy as np
 
 dataset = pd.read_csv("customer_regression_data.csv")
 
+
+
 print(dataset.head())
 
 print(dataset.columns)
@@ -24,7 +26,7 @@ print(y)
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2, random_state = 0)
 
 #Training our model
-regressor = RandomForestRegressor(n_estimators=200, random_state=42)
+regressor = RandomForestRegressor(n_estimators=100, random_state=42)
 regressor.fit(X_train, y_train)
 
 #Making Predictions
@@ -40,3 +42,12 @@ print("Mean Absolute Error:", round(mae,2))
 print("Mean Squared Error:", round(mse,2))
 print("Root Mean Squared Error:", round(rmse, 2))
 print("R2 score:", round(r2,2))
+
+#Mean Absolute Error: 320.92
+#Mean Squared Error: 845479.8
+#Root Mean Squared Error: 919.5
+#R2 score: 0.26
+#with "PreviousMonetaryValue", "PreviousAverageOrderValue", "PreviousOrderCount", "PreviousOrderValue" columns
+
+#The Random Forest regression model was able to identify some relationship between previous customer behaviour and order value, but the prediction accuracy was limited. This suggests that previous customer behaviour alone is not enough to accurately predict future order value. Additional features such as product category, quantity, seasonality, and customer segment may improve future model performance.
+#Testing with product and quantity information

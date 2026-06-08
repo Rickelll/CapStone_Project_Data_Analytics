@@ -92,6 +92,8 @@ def customer_sales_data(purchase_orders):
 
     # Make a copy so the original dataset is safe
     purchase_orders = purchase_orders.copy()
+    print(purchase_orders.columns)
+    print(purchase_orders.dtypes)
 
     # Create value for each product row
     purchase_orders["RowValue"] = (purchase_orders["Quantity"] * purchase_orders["UnitPrice"])
@@ -100,7 +102,10 @@ def customer_sales_data(purchase_orders):
     purchase_orders["InvoiceDate"] = pd.to_datetime(purchase_orders["InvoiceDate"])
 
     # Create total value for each order/invoice
-    order_values = (purchase_orders.groupby(["CustomerID", "InvoiceNo"]).agg(InvoiceDate=("InvoiceDate", "max"),Country=("Country", "first"),OrderValue=("RowValue", "sum")).reset_index()).round(2)
+    order_values = (purchase_orders.groupby(["CustomerID", "InvoiceNo"]).agg(InvoiceDate=("InvoiceDate", "max"),
+                                                                             Country=("Country", "first"),
+                                                                             OrderValue=("RowValue", "sum"),
+                                                                             ).reset_index()).round(2)
 
     # Round order value
     order_values["OrderValue"] = order_values["OrderValue"].round(2)
@@ -116,21 +121,6 @@ def customer_sales_data(purchase_orders):
 
     # AverageOrderValue: running average spend per order
     order_values["AverageOrderValue"] = (order_values["MonetaryValue"] / order_values["OrderCount"]).round(2)
-
-    ##Bug Fix:
-    #To prevent data leakage the best case for regression models to work is to go off previous customerID data value to learn from.
-    order_values["PreviousMonetaryValue"] = (order_values.groupby("CustomerID")["MonetaryValue"].shift(1))
-
-    order_values["PreviousAverageOrderValue"] = (order_values.groupby("CustomerID")["AverageOrderValue"].shift(1))
-
-    order_values["PreviousOrderCount"] = (order_values.groupby("CustomerID")["OrderCount"].shift(1))
-
-    order_values["PreviousInvoiceDate"] = (order_values.groupby("CustomerID")["InvoiceDate"].shift(1)
-)
-
-    order_values["DaysSincePreviousOrder"] = (
-            order_values["InvoiceDate"] - order_values["PreviousInvoiceDate"]
-    ).dt.days
 
     # Keep columns in the order you want
     customer_sales_data = order_values[
