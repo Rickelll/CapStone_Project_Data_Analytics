@@ -201,7 +201,6 @@ def create_regression_data(customer_sales_data):
     # Save regression-ready CSV
     regression_data.to_csv("customer_regression_data.csv", index=False)
 
-    print(regression_data.head())
     print("customer_regression_data.csv has been created.")
 
     return regression_data
@@ -214,15 +213,14 @@ df = pd.DataFrame(dataset)
 #using the function we can split all of data to make the cancelled, returned and normal orders into different datasets
 purchase_orders, cancelled_orders = split_order_types(dataset)
 
-print("Purchase orders:", len(purchase_orders))
-print("Cancelled orders:", len(cancelled_orders))
 
 purchase_orders.to_csv("purchase_orders.csv", index=False)
 cancelled_orders.to_csv("cancelled_orders.csv", index=False)
 
 
-create_customer_order_sales_dataset(purchase_orders)
+if __name__ == "__main__":
+    create_customer_order_sales_dataset(purchase_orders)
 
-sales_data = customer_sales_data(purchase_orders)
+    sales_data = customer_sales_data(purchase_orders)
 
-create_regression_data(sales_data)
+    create_regression_data(sales_data)
