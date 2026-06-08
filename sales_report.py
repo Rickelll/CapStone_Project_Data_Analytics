@@ -207,6 +207,29 @@ def sales_over_time(completed_purchases, canceled_orders):
     plt.tight_layout()
     plt.show()
 
+    plt.figure(figsize=(10, 5))
+
+    plt.plot(
+        monthly_sales_complete["Month"],
+        monthly_sales_complete["MonthlyRevenue"],
+        marker="o",
+        label="Completed Sales Revenue"
+    )
+
+    plt.plot(
+        monthly_cancellations_complete["Month"],
+        monthly_cancellations_complete["MonthlyRevenue"],
+        marker="o",
+        label="Cancellation Value"
+    )
+
+    plt.title("Monthly Completed Sales vs Cancellation Value")
+    plt.xlabel("Month")
+    plt.ylabel("Value")
+    plt.xticks(rotation=45)
+    plt.legend()
+    plt.tight_layout()
+    plt.show()
 
 
     return monthly_sales
