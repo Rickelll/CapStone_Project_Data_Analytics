@@ -44,10 +44,10 @@ def revenue(purchase_orders, canceled_orders, completed_purchases):
     print("Net Average Invoice Value:", round(net_average_invoice_value, 2))
 
     #Highest and lowest invoice values, not row values
-    purchase_orders = purchase_orders.copy()
-    purchase_orders["RowValue"] = purchase_orders["Quantity"] * purchase_orders["UnitPrice"]
+    completed_purchases = completed_purchases.copy()
+    completed_purchases["RowValue"] = completed_purchases["Quantity"] * completed_purchases["UnitPrice"]
 
-    invoice_purchased_values = (purchase_orders
+    invoice_purchased_values = (completed_purchases
         .groupby("InvoiceNo")["RowValue"]
         .sum()
         .reset_index(name="InvoiceValue")
