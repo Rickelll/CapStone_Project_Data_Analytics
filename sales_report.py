@@ -96,55 +96,91 @@ def revenue(purchase_orders, canceled_orders, completed_purchases):
 
 
 #are sales increasing or decreasing overitme
-def sales_over_time(completed_purchases):
+def sales_over_time(completed_purchases, canceled_orders):
     print("Sales Over Time")
 
     completed_purchases = completed_purchases.copy()
+    canceled_orders = canceled_orders.copy()
 
     # Make sure InvoiceDate is datetime
     completed_purchases["InvoiceDate"] = pd.to_datetime(completed_purchases["InvoiceDate"])
+    canceled_orders["InvoiceDate"] = pd.to_datetime(canceled_orders["InvoiceDate"])
 
     # Create value for each row
     completed_purchases["RowValue"] = (completed_purchases["Quantity"] * completed_purchases["UnitPrice"])
+    canceled_orders['RowValue'] = abs(canceled_orders['Quantity']) * canceled_orders['UnitPrice']
 
-    # Create month column
+
+    # Create month column for purchases
     completed_purchases["Month"] = (
         completed_purchases["InvoiceDate"]
         .dt.to_period("M")
         .dt.to_timestamp()
     )
 
+    #create month column for cancellations
+    canceled_orders["Month"] = (
+        canceled_orders["InvoiceDate"]
+        .dt.to_period("M")
+        .dt.to_timestamp()
+    )
+
+    monthly_cancellations = (
+        canceled_orders.groupby("Month")
+        .agg(MonthlyRevenue=("RowValue", "sum"),
+             TotalInvoices=("InvoiceNo", "nunique"),
+             )
+        .reset_index())
+
     monthly_sales = (
-        completed_purchases
-        .groupby("Month")
+        completed_purchases.groupby("Month")
         .agg(
             MonthlyRevenue=("RowValue", "sum"),
             TotalInvoices=("InvoiceNo", "nunique")
-        )
-        .reset_index())
+            )
+            .reset_index())
 
-    # Average invoice value per month
+    # Average purchase invoice value per month
     monthly_sales["AverageInvoiceValue"] = (monthly_sales["MonthlyRevenue"] / monthly_sales["TotalInvoices"])
+
+    # Average cancellation invoice value per month
+    monthly_cancellations['AverageInvoiceValue'] = (monthly_cancellations['MonthlyRevenue'] / monthly_cancellations['TotalInvoices'])
 
     # Round values
     monthly_sales["MonthlyRevenue"] = monthly_sales["MonthlyRevenue"].round(2)
     monthly_sales["AverageInvoiceValue"] = monthly_sales["AverageInvoiceValue"].round(2)
 
+    monthly_cancellations['MonthlyRevenue'] = monthly_cancellations['MonthlyRevenue'].round(2)
+    monthly_cancellations['AverageInvoiceValue'] = monthly_cancellations['AverageInvoiceValue'].round(2)
+
     # Compare first month to last month
     monthly_sales_complete = monthly_sales.iloc[:-1]
 
-    print(monthly_sales_complete["MonthlyRevenue"])
+    monthly_cancellations_complete = monthly_cancellations.iloc[:-1]
 
     first_month_revenue = monthly_sales_complete["MonthlyRevenue"].iloc[0]
     last_month_revenue = monthly_sales_complete["MonthlyRevenue"].iloc[-1]
 
+    first_month_loss = monthly_cancellations_complete["MonthlyRevenue"].iloc[0]
+    last_month_loss =  monthly_cancellations_complete["MonthlyRevenue"].iloc[-1]
+
     revenue_change = last_month_revenue - first_month_revenue
     percentage_change = (revenue_change / first_month_revenue) * 100
+
+    revenue_loss = last_month_loss - first_month_loss
+    percentage_loss = (revenue_loss / last_month_loss) * 100
 
     print("First Month Revenue:", round(first_month_revenue, 2))
     print("Last Month Revenue:", round(last_month_revenue, 2))
     print("Revenue Change:", round(revenue_change, 2))
     print("Percentage Change:", round(percentage_change, 2), "%")
+
+    print("================================================")
+
+    print("First Month Loss:", round(first_month_loss, 2))
+    print("Last Month Loss:", round(last_month_loss, 2))
+    print("Revenue Loss:", round(revenue_loss, 2))
+    print("Percentage Loss:", round(percentage_loss, 2), "%")
 
     if revenue_change > 0:
         print("Sales increased over time.")
@@ -162,10 +198,21 @@ def sales_over_time(completed_purchases):
     plt.tight_layout()
     plt.show()
 
+    plt.figure(figsize=(10, 5))
+    plt.plot(monthly_cancellations_complete["Month"], monthly_cancellations_complete["MonthlyRevenue"], marker="o")
+    plt.title("Monthly Sales loss Over Time")
+    plt.xlabel("Month")
+    plt.ylabel("loss")
+    plt.xticks(rotation=45)
+    plt.tight_layout()
+    plt.show()
+
+
+
     return monthly_sales
     #Sales revenue increased by 105.75% between the first recorded month and the last complete month. The final month was excluded from the trend comparison because it appeared incomplete and caused a misleading drop in the graph.
     #Monthly sales revenue increased by 105.75% between the first complete month and the last complete month analysed. Sales fluctuated during the early months, but revenue increased strongly from September to November, reaching the highest monthly revenue in November. The final incomplete month was excluded to avoid misleading the trend analysis.
 #best months and worst months
 
-
-sales_over_time(completed_purchases)
+revenue(purchase_orders, canceled_orders, completed_purchases)
+sales_over_time(completed_purchases, canceled_orders)
