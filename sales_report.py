@@ -43,7 +43,7 @@ def revenue(purchase_orders, canceled_orders, completed_purchases):
     print("Total Invoices:", total_invoices)
     print("Net Average Invoice Value:", round(net_average_invoice_value, 2))
 
-    # Highest and lowest invoice values, not row values
+    #Highest and lowest invoice values, not row values
     purchase_orders = purchase_orders.copy()
     purchase_orders["RowValue"] = purchase_orders["Quantity"] * purchase_orders["UnitPrice"]
 
