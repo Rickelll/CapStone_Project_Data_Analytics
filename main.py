@@ -102,14 +102,20 @@ def customer_sales_data(purchase_orders):
     # Create total value for each order/invoice
     order_values = (purchase_orders.groupby(["CustomerID", "InvoiceNo"]).agg(InvoiceDate=("InvoiceDate", "max"),Country=("Country", "first"),OrderValue=("RowValue", "sum")).reset_index()).round(2)
 
+    # Round order value
+    order_values["OrderValue"] = order_values["OrderValue"].round(2)
+
     # Sort by customer and date so running totals work correctly
     order_values = order_values.sort_values(by=["CustomerID", "InvoiceDate", "InvoiceNo"])
+
+    # Running order count per customer
+    order_values["OrderCount"] = (order_values.groupby("CustomerID").cumcount() + 1)
 
     # MonetaryValue: running total spent by the customer
     order_values["MonetaryValue"] = (order_values.groupby("CustomerID")["OrderValue"].cumsum()).round(2)
 
     # AverageOrderValue: running average spend per order
-    order_values["AverageOrderValue"] = (order_values["MonetaryValue"] / len(order_values)).round(2)
+    order_values["AverageOrderValue"] = (order_values["MonetaryValue"] / order_values["OrderCount"]).round(2)
 
     # Keep columns in the order you want
     customer_sales_data = order_values[
