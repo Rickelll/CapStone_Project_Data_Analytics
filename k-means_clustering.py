@@ -1,4 +1,6 @@
 import pandas as pd
+from sklearn.cluster import KMeans
+from sklearn.preprocessing import StandardScaler
 
 dataset = pd.read_csv('customer_order_sales_data.csv')
 
