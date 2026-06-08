@@ -138,6 +138,7 @@ def customer_sales_data(purchase_orders):
             "CustomerID",
             "InvoiceNo",
             "InvoiceDate",
+            "OrderCount",
             "MonetaryValue",
             "AverageOrderValue",
             "Country",
@@ -153,8 +154,67 @@ def customer_sales_data(purchase_orders):
 
     return customer_sales_data
 
-def create_regression_datas(customer_sales_data):
-    customer_sales_data = customer_sales_data.copy()
+def create_regression_data(customer_sales_data):
+    print("Creating regression dataset...")
+
+    # Make a copy so the reporting dataset is not changed
+    regression_data = customer_sales_data.copy()
+
+    # Make sure InvoiceDate is datetime
+    regression_data["InvoiceDate"] = pd.to_datetime(regression_data["InvoiceDate"])
+
+    # Sort correctly before creating previous values
+    regression_data = regression_data.sort_values(by=["CustomerID", "InvoiceDate", "InvoiceNo"])
+
+    # Previous customer behaviour before the current order
+    regression_data["PreviousMonetaryValue"] = (regression_data.groupby("CustomerID")["MonetaryValue"].shift(1))
+
+    regression_data["PreviousAverageOrderValue"] = (regression_data.groupby("CustomerID")["AverageOrderValue"].shift(1))
+
+    regression_data["PreviousOrderCount"] = (regression_data.groupby("CustomerID")["OrderCount"].shift(1))
+
+    regression_data["PreviousOrderValue"] = (regression_data.groupby("CustomerID")["OrderValue"].shift(1))
+
+    regression_data["PreviousInvoiceDate"] = (regression_data.groupby("CustomerID")["InvoiceDate"].shift(1))
+
+    regression_data["DaysSincePreviousOrder"] = (regression_data["InvoiceDate"] - regression_data["PreviousInvoiceDate"]).dt.days
+
+    # Drop first order for each customer because there is no previous behaviour
+    regression_data = regression_data.dropna(subset=[
+            "PreviousMonetaryValue",
+            "PreviousAverageOrderValue",
+            "PreviousOrderCount",
+            "PreviousOrderValue",
+            "DaysSincePreviousOrder"
+        ]
+    )
+
+    # Keep only useful regression columns
+    regression_data = regression_data[
+        [
+            "CustomerID",
+            "InvoiceNo",
+            "InvoiceDate",
+            "Country",
+            "PreviousMonetaryValue",
+            "PreviousAverageOrderValue",
+            "PreviousOrderCount",
+            "PreviousOrderValue",
+            "DaysSincePreviousOrder",
+            "OrderValue"
+        ]
+    ]
+
+    # Round numeric values
+    regression_data = regression_data.round(2)
+
+    # Save regression-ready CSV
+    regression_data.to_csv("customer_regression_data.csv", index=False)
+
+    print(regression_data.head())
+    print("customer_regression_data.csv has been created.")
+
+    return regression_data
 
 dataset = pd.read_csv('customer_segmentation_data.csv', encoding="cp1252")
 
@@ -173,4 +233,6 @@ cancelled_orders.to_csv("cancelled_orders.csv", index=False)
 
 create_customer_order_sales_dataset(purchase_orders)
 
-customer_sales_data(purchase_orders)
+sales_data = customer_sales_data(purchase_orders)
+
+create_regression_data(sales_data)
