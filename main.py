@@ -37,7 +37,6 @@ def split_order_types(df):
 
     return purchase_orders, cancelled_orders
 
-
 def create_customer_order_sales_dataset(purchase_orders):
     print("Creating customer sales dataset...")
 
@@ -129,24 +128,6 @@ def customer_sales_data(purchase_orders):
 
 dataset = pd.read_csv('customer_segmentation_data.csv', encoding="cp1252")
 
-#Checking for missing values
-#print(dataset.isnull().sum())
-#print("Length of the Data: ",len(dataset))
-
-# Convert CustomerID to int
-
-#There is still plent of useful data where the description isnt so filling the missing data with unkown would be the best option to keep all the data good.
-dataset['Description'] = dataset['Description'].fillna('Unknown')
-
-#Checking missing values in dataset['Description']
-#print(dataset.isnull().sum())
-
-#Dropping CustomerID because we cant create new Reliable CustomerID data
-dataset = dataset.dropna(subset=['CustomerID'])
-
-#making sure all customerID is int value
-dataset["CustomerID"] = dataset["CustomerID"].astype(int)
-
 #Adding all data to DataFrame after all missing data has been dealt with
 df = pd.DataFrame(dataset)
 
@@ -159,15 +140,7 @@ print("Cancelled orders:", len(cancelled_orders))
 purchase_orders.to_csv("purchase_orders.csv", index=False)
 cancelled_orders.to_csv("cancelled_orders.csv", index=False)
 
-print(df.columns)
 
-while True:
-    try:
-        question = int(input("Enter Your Choice: "))
-    except ValueError:
-        print("Please enter a number.")
-        continue
-    if question == 1:
-        create_customer_order_sales_dataset(purchase_orders)
-    elif question == 2:
-        customer_sales_data(purchase_orders)
+create_customer_order_sales_dataset(purchase_orders)
+
+customer_sales_data(purchase_orders)
