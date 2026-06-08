@@ -48,6 +48,7 @@ def percentile_customer_based_segmentation(dataset):
 
 percentile_customer_based_segmentation(dataset)
 
+#Mapping all customer status to use for K-means clustering for human visualisation
 status_mapping ={
     "VIP": 5,
     "Loyal": 4,
@@ -60,3 +61,28 @@ dataset['Customer_Status'] = dataset['Customer_Status'].map(status_mapping)
 
 df = pd.DataFrame(dataset)
 print(df.dtypes)
+
+#Dataset columns used for Kmeans clustering
+X = dataset[['Frequency', 'Recency', 'AverageOrderValue', 'MonetaryValue']]
+
+#Scaling our data
+scaler = StandardScaler()
+scaled_data = scaler.fit_transform(X)
+
+kmeans = KMeans(n_clusters=5, random_state=42, n_init=10)
+
+df['Cluster'] = kmeans.fit_predict(scaled_data)
+
+print("K Means clustering completed......")
+print(df, "<======= clustered data")
+print(df[["CustomerID",
+    "Frequency",
+    "Recency",
+    "AverageOrderValue",
+    "MonetaryValue",
+    "Customer_Status",
+    "Cluster"
+]].head(20))
+
+print(pd.crosstab(df["Customer_Status"], df["Cluster"]))
+
