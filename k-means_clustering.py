@@ -17,9 +17,6 @@ def percentile_customer_based_segmentation(dataset):
     average_limit = dataset["AverageOrderValue"].quantile(0.75)
     high_monetary_value = dataset["MonetaryValue"].quantile(0.25)
 
-    # Starting everyone as Inactive Customer by default
-    dataset['Customer_Status'] = 'Inactive'
-
     #Frequency is in the top 25% because higher frequecny mean more loyalty
     high_frequency = dataset["Frequency"] >= frequency_limit
 
@@ -32,22 +29,18 @@ def percentile_customer_based_segmentation(dataset):
     #Monetary Value is in the top 25& because more overall spending means values customer
     high_monetary_value = dataset["MonetaryValue"] >= high_monetary_value
 
+    # Starting everyone as Inactive Customer by default
+    dataset['Customer_Status'] = 'Inactive'
 
-    vip_customer = dataset[high_frequency & recent_customer & high_average & high_monetary_value]
+    dataset.loc[high_frequency & recent_customer & high_average & high_monetary_value, "Customer_Status"] = 'VIP'
 
-    loyal_customer = dataset[high_frequency & recent_customer & ~high_average]
+    dataset.loc[high_frequency & recent_customer & ~high_average, "Customer_Status"] = 'Loyal'
 
-    at_risk_customer = dataset[high_frequency & ~recent_customer]
+    dataset.loc[high_frequency & ~recent_customer, "Customer_Status"] = 'Risk'
 
-    new_customer = dataset[~high_frequency & recent_customer]
+    dataset.loc[~high_frequency & recent_customer, "Customer_Status"] = 'New'
 
-    inactive_customer = dataset[~high_frequency & ~recent_customer]
-
-    print("Length of data: ",len(dataset))
-    print("VIP customers: ",len(vip_customer))
-    print("Loyal Customers: ",len(loyal_customer))
-    print("At risk of losing : ",len(at_risk_customer))
-    print("New customers: ",len(new_customer))
-    print("Inactive Customers: ",len(inactive_customer))
+    print(dataset['Customer_Status'].head(20))
+    print(dataset.columns)
 
 percentile_customer_based_segmentation(dataset)
