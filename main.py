@@ -117,6 +117,21 @@ def customer_sales_data(purchase_orders):
     # AverageOrderValue: running average spend per order
     order_values["AverageOrderValue"] = (order_values["MonetaryValue"] / order_values["OrderCount"]).round(2)
 
+    ##Bug Fix:
+    #To prevent data leakage the best case for regression models to work is to go off previous customerID data value to learn from.
+    order_values["PreviousMonetaryValue"] = (order_values.groupby("CustomerID")["MonetaryValue"].shift(1))
+
+    order_values["PreviousAverageOrderValue"] = (order_values.groupby("CustomerID")["AverageOrderValue"].shift(1))
+
+    order_values["PreviousOrderCount"] = (order_values.groupby("CustomerID")["OrderCount"].shift(1))
+
+    order_values["PreviousInvoiceDate"] = (order_values.groupby("CustomerID")["InvoiceDate"].shift(1)
+)
+
+    order_values["DaysSincePreviousOrder"] = (
+            order_values["InvoiceDate"] - order_values["PreviousInvoiceDate"]
+    ).dt.days
+
     # Keep columns in the order you want
     customer_sales_data = order_values[
         [
@@ -137,6 +152,9 @@ def customer_sales_data(purchase_orders):
     print("customer_sales_data.csv has been created.")
 
     return customer_sales_data
+
+def create_regression_datas(customer_sales_data):
+    customer_sales_data = customer_sales_data.copy()
 
 dataset = pd.read_csv('customer_segmentation_data.csv', encoding="cp1252")
 
