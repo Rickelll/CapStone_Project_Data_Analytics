@@ -240,7 +240,6 @@ def sales_over_time(completed_purchases, canceled_orders):
     #Completed sales revenue increased strongly over time, especially from September to November. Cancellation values fluctuated month to month but remained much lower than completed sales revenue. This suggests that although cancellations caused some revenue loss, they did not change the overall positive sales trend.
 
 #Top countries by completed Revenue
-
 def countries_by_completed_purchases(completed_revenue):
     print("Top Countries by Completed Purchases:")
 
@@ -263,9 +262,7 @@ def countries_by_completed_purchases(completed_revenue):
     )
 
     # Average invoice value by country
-    country_revenue["AverageInvoiceValue"] = (
-            country_revenue["CompletedRevenue"] / country_revenue["TotalInvoices"]
-    )
+    country_revenue["AverageInvoiceValue"] = (country_revenue["CompletedRevenue"] / country_revenue["TotalInvoices"])
 
     # Round values
     country_revenue["CompletedRevenue"] = country_revenue["CompletedRevenue"].round(2)
@@ -302,13 +299,54 @@ countries_by_completed_purchases(completed_purchases)
 def top_products_by_completed_purchases(completed_purchases):
     print("Top Products by Completed Purchases:")
 
-#Top customers by completed Revenue
+    completed_purchases = completed_purchases.copy()
+
+    # Create value for each row
+    completed_purchases["RowValue"] = (completed_purchases["Quantity"] * completed_purchases["UnitPrice"])
+
+    # Group by product
+    product_revenue = (completed_purchases.groupby(["StockCode", "Description"]).agg(
+            CompletedRevenue=("RowValue", "sum"),
+            TotalQuantitySold=("Quantity", "sum"),
+            TotalInvoices=("InvoiceNo", "nunique"),
+            TotalCustomers=("CustomerID", "nunique")).reset_index()
+    )
+
+    # Average revenue per invoice for each product
+    product_revenue["AverageInvoiceValue"] = (product_revenue["CompletedRevenue"] / product_revenue["TotalInvoices"])
+
+    # Round values
+    product_revenue["CompletedRevenue"] = product_revenue["CompletedRevenue"].round(2)
+    product_revenue["AverageInvoiceValue"] = product_revenue["AverageInvoiceValue"].round(2)
+
+    # Sort by highest revenue
+    product_revenue = product_revenue.sort_values(by="CompletedRevenue",ascending=False)
+
+    print(product_revenue.head(10))
+
+    top_10_products = product_revenue.head(10)
+
+    plt.figure(figsize=(10, 6))
+
+    plt.barh(top_10_products["Description"],top_10_products["CompletedRevenue"])
+
+    plt.title("Top 10 Products by Completed Revenue")
+    plt.xlabel("Completed Revenue")
+    plt.ylabel("Product")
+    plt.gca().invert_yaxis()
+    plt.tight_layout()
+    plt.show()
+
+    #Completed purchase revenue was grouped by product to identify the highest earning products. Cancelled and reversed purchases were excluded so the results reflect products that generated successful revenue.
+
+    return product_revenue
 
 #One-Time buyes vs repeat buyers
 
 
 
 
-
+countries_by_completed_purchases(completed_purchases)
+top_products_by_completed_purchases(completed_purchases)
 revenue(purchase_orders, canceled_orders, completed_purchases)
 sales_over_time(completed_purchases, canceled_orders)
