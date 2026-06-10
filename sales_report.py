@@ -242,7 +242,7 @@ def sales_over_time(completed_purchases, canceled_orders):
 #Top countries by completed Revenue
 
 def countries_by_completed_purchases(completed_revenue):
-    print("Countries by Completed Purchases:")
+    print("Top Countries by Completed Purchases:")
 
     completed_purchases = completed_revenue.copy()
 
@@ -299,7 +299,8 @@ def countries_by_completed_purchases(completed_revenue):
 countries_by_completed_purchases(completed_purchases)
 
 #Top Products by completed revenue
-
+def top_products_by_completed_purchases(completed_purchases):
+    print("Top Products by Completed Purchases:")
 
 #Top customers by completed Revenue
 
