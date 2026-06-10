@@ -1,5 +1,6 @@
 import pandas as pd
 from sklearn.ensemble import RandomForestRegressor
+from sklearn.tree import DecisionTreeRegressor
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 import numpy as np
@@ -31,7 +32,7 @@ print(y)
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2, random_state = 0)
 
 #Training our model
-regressor = RandomForestRegressor(n_estimators=20, random_state=42)
+regressor = DecisionTreeRegressor(random_state = 0)
 regressor.fit(X_train, y_train)
 
 #Making Predictions
@@ -91,5 +92,5 @@ print("R2 score:", round(r2,2))
 #Root Mean Squared Error: 1147.09
 #R2 score: 0.25
 
-
+#Next Test: Testing with DecsionTreeRegressor
 
