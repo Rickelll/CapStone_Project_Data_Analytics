@@ -211,6 +211,8 @@ def create_customer_order_sales_dataset(purchase_orders):
 def customer_sales_data(purchase_orders):
     print("Welcome to Customer Data")
 
+    #Fixing Bug: Adding Unit and Quantity to dataset
+
     # Make a copy so the original dataset is safe
     purchase_orders = purchase_orders.copy()
     print(purchase_orders.columns)
