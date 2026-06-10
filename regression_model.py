@@ -120,4 +120,4 @@ print("R2 score:", round(r2,2))
 # The model shows that previous customer/order information has some relationship
 # with future OrderValue, but it is not strong enough to make highly accurate
 # predictions on its own. Future improvements could include product category,
-# seasonality, customer segment, and more detailed product-level features.
+# seasonality, customer segment, and more detailed product-level features
