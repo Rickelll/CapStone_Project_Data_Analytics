@@ -249,7 +249,57 @@ def countries_by_completed_purchases(completed_revenue):
     completed_purchases['RowValue'] = (
         completed_purchases["Quantity"] * completed_purchases["UnitPrice"]
     )
+
+    # Group revenue by country
+    country_revenue = (
+        completed_purchases
+        .groupby("Country")
+        .agg(
+            CompletedRevenue=("RowValue", "sum"),
+            TotalInvoices=("InvoiceNo", "nunique"),
+            TotalCustomers=("CustomerID", "nunique")
+        )
+        .reset_index()
+    )
+
+    # Average invoice value by country
+    country_revenue["AverageInvoiceValue"] = (
+            country_revenue["CompletedRevenue"] / country_revenue["TotalInvoices"]
+    )
+
+    # Round values
+    country_revenue["CompletedRevenue"] = country_revenue["CompletedRevenue"].round(2)
+    country_revenue["AverageInvoiceValue"] = country_revenue["AverageInvoiceValue"].round(2)
+
+    # Sort highest revenue countries first
+    country_revenue = country_revenue.sort_values(
+        by="CompletedRevenue",
+        ascending=False
+    )
+
+    print(country_revenue.head(10))
+
+    top_10_countries = country_revenue.head(10)
+
+    plt.figure(figsize=(10, 5))
+    plt.barh(top_10_countries["Country"],top_10_countries["CompletedRevenue"]
+    )
+
+    plt.title("Top 10 Countries by Completed Revenue")
+    plt.xlabel("Completed Revenue")
+    plt.ylabel("Country")
+    plt.gca().invert_yaxis()
+    plt.tight_layout()
+    plt.show()
+
+    return country_revenue
+
+    #Completed purchase revenue was grouped by country to identify which markets contributed the most to successful sales. Reversed and cancelled purchases were excluded so the country revenue figures reflect completed customer transactions.
+
+countries_by_completed_purchases(completed_purchases)
+
 #Top Products by completed revenue
+
 
 #Top customers by completed Revenue
 
