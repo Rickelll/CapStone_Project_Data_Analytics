@@ -211,55 +211,89 @@ def create_customer_order_sales_dataset(purchase_orders):
 def customer_sales_data(purchase_orders):
     print("Welcome to Customer Data")
 
-    #Fixing Bug: Adding Unit and Quantity to dataset
-
     # Make a copy so the original dataset is safe
     purchase_orders = purchase_orders.copy()
-    print(purchase_orders.columns)
-    print(purchase_orders.dtypes)
-
-    # Create value for each product row
-    purchase_orders["RowValue"] = (purchase_orders["Quantity"] * purchase_orders["UnitPrice"])
 
     # Convert InvoiceDate to datetime
     purchase_orders["InvoiceDate"] = pd.to_datetime(purchase_orders["InvoiceDate"])
 
-    # Create total value for each order/invoice
-    order_values = (purchase_orders.groupby(["CustomerID", "InvoiceNo"]).agg(InvoiceDate=("InvoiceDate", "max"),
-                                                                             Country=("Country", "first"),
-                                                                             OrderValue=("RowValue", "sum"),
-                                                                             ).reset_index()).round(2)
+    # Create value for each product row
+    purchase_orders["RowValue"] = (
+        purchase_orders["Quantity"] * purchase_orders["UnitPrice"]
+    ).round(2)
 
-    # Round order value
-    order_values["OrderValue"] = order_values["OrderValue"].round(2)
+    # Create invoice-level order value
+    invoice_values = (
+        purchase_orders
+        .groupby(["CustomerID", "InvoiceNo"])
+        .agg(
+            InvoiceDate=("InvoiceDate", "max"),
+            OrderValue=("RowValue", "sum")
+        )
+        .reset_index()
+    )
 
-    # Sort by customer and date so running totals work correctly
-    order_values = order_values.sort_values(by=["CustomerID", "InvoiceDate", "InvoiceNo"])
+    invoice_values["OrderValue"] = invoice_values["OrderValue"].round(2)
+
+    # Sort invoices by customer and date
+    invoice_values = invoice_values.sort_values(
+        by=["CustomerID", "InvoiceDate", "InvoiceNo"]
+    )
 
     # Running order count per customer
-    order_values["OrderCount"] = (order_values.groupby("CustomerID").cumcount() + 1)
+    invoice_values["OrderCount"] = (
+        invoice_values.groupby("CustomerID").cumcount() + 1
+    )
 
-    # MonetaryValue: running total spent by the customer
-    order_values["MonetaryValue"] = (order_values.groupby("CustomerID")["OrderValue"].cumsum()).round(2)
+    # Running monetary value per customer
+    invoice_values["MonetaryValue"] = (
+        invoice_values.groupby("CustomerID")["OrderValue"].cumsum()
+    ).round(2)
 
-    # AverageOrderValue: running average spend per order
-    order_values["AverageOrderValue"] = (order_values["MonetaryValue"] / order_values["OrderCount"]).round(2)
+    # Running average order value per customer
+    invoice_values["AverageOrderValue"] = (
+        invoice_values["MonetaryValue"] / invoice_values["OrderCount"]
+    ).round(2)
 
-    # Keep columns in the order you want
-    customer_sales_data = order_values[
+    # Merge invoice/customer features back onto the original product rows
+    customer_sales_data = purchase_orders.merge(
+        invoice_values[
+            [
+                "CustomerID",
+                "InvoiceNo",
+                "OrderValue",
+                "OrderCount",
+                "MonetaryValue",
+                "AverageOrderValue"
+            ]
+        ],
+        on=["CustomerID", "InvoiceNo"],
+        how="left"
+    )
+
+    # Sort final dataset
+    customer_sales_data = customer_sales_data.sort_values(
+        by=["CustomerID", "InvoiceDate", "InvoiceNo"]
+    )
+
+    # Keep columns in useful order
+    customer_sales_data = customer_sales_data[
         [
             "CustomerID",
             "InvoiceNo",
+            "StockCode",
+            "Description",
             "InvoiceDate",
+            "Quantity",
+            "UnitPrice",
+            "OrderValue",
             "OrderCount",
             "MonetaryValue",
             "AverageOrderValue",
-            "Country",
-            "OrderValue"
+            "Country"
         ]
     ]
 
-    # Save to CSV
     customer_sales_data.to_csv("customer_sales_data.csv", index=False)
 
     print(customer_sales_data.head())
@@ -281,6 +315,10 @@ def create_regression_data(customer_sales_data):
 
     # Previous customer behaviour before the current order
     regression_data["PreviousMonetaryValue"] = (regression_data.groupby("CustomerID")["MonetaryValue"].shift(1))
+
+    regression_data["PreviousQuantity"] = (regression_data.groupby("CustomerID")["Quantity"].shift(1))
+
+    regression_data["PreviousUnitPrice"] = (regression_data.groupby("CustomerID")["UnitPrice"].shift(1))
 
     regression_data["PreviousAverageOrderValue"] = (regression_data.groupby("CustomerID")["AverageOrderValue"].shift(1))
 
@@ -309,6 +347,8 @@ def create_regression_data(customer_sales_data):
             "InvoiceNo",
             "InvoiceDate",
             "Country",
+            'PreviousQuantity',
+            'PreviousUnitPrice',
             "PreviousMonetaryValue",
             "PreviousAverageOrderValue",
             "PreviousOrderCount",
