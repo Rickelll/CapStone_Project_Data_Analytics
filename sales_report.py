@@ -344,9 +344,19 @@ def top_products_by_completed_purchases(completed_purchases):
 #One-Time buyes vs repeat buyers
 
 
-
+print("Sales Report of Customer Segmentation")
 
 countries_by_completed_purchases(completed_purchases)
+
+print('=============================================')
+
 top_products_by_completed_purchases(completed_purchases)
+
+print('=============================================')
+
 revenue(purchase_orders, canceled_orders, completed_purchases)
+
+print('=============================================')
+
 sales_over_time(completed_purchases, canceled_orders)
+
