@@ -310,35 +310,58 @@ def create_regression_data(customer_sales_data):
     # Make sure InvoiceDate is datetime
     regression_data["InvoiceDate"] = pd.to_datetime(regression_data["InvoiceDate"])
 
-    # Sort correctly before creating previous values
-    regression_data = regression_data.sort_values(by=["CustomerID", "InvoiceDate", "InvoiceNo"])
+    # Sort before removing duplicate invoice rows
+    regression_data = regression_data.sort_values(
+        by=["CustomerID", "InvoiceDate", "InvoiceNo"]
+    )
 
-    # Previous customer behaviour before the current order
-    regression_data["PreviousMonetaryValue"] = (regression_data.groupby("CustomerID")["MonetaryValue"].shift(1))
+    # Keep one row per invoice
+    # This fixes the duplicated InvoiceNo problem caused by product-level rows
+    regression_data = regression_data.drop_duplicates(
+        subset=["CustomerID", "InvoiceNo"],
+        keep="first"
+    ).copy()
 
-    regression_data["PreviousQuantity"] = (regression_data.groupby("CustomerID")["Quantity"].shift(1))
+    # Sort again before creating previous customer behaviour
+    regression_data = regression_data.sort_values(
+        by=["CustomerID", "InvoiceDate", "InvoiceNo"]
+    )
 
-    regression_data["PreviousUnitPrice"] = (regression_data.groupby("CustomerID")["UnitPrice"].shift(1))
+    # Previous customer behaviour before the current invoice
+    regression_data["PreviousMonetaryValue"] = (
+        regression_data.groupby("CustomerID")["MonetaryValue"].shift(1)
+    )
 
-    regression_data["PreviousAverageOrderValue"] = (regression_data.groupby("CustomerID")["AverageOrderValue"].shift(1))
+    regression_data["PreviousAverageOrderValue"] = (
+        regression_data.groupby("CustomerID")["AverageOrderValue"].shift(1)
+    )
 
-    regression_data["PreviousOrderCount"] = (regression_data.groupby("CustomerID")["OrderCount"].shift(1))
+    regression_data["PreviousOrderCount"] = (
+        regression_data.groupby("CustomerID")["OrderCount"].shift(1)
+    )
 
-    regression_data["PreviousOrderValue"] = (regression_data.groupby("CustomerID")["OrderValue"].shift(1))
+    regression_data["PreviousOrderValue"] = (
+        regression_data.groupby("CustomerID")["OrderValue"].shift(1)
+    )
 
-    regression_data["PreviousInvoiceDate"] = (regression_data.groupby("CustomerID")["InvoiceDate"].shift(1))
+    regression_data["PreviousInvoiceDate"] = (
+        regression_data.groupby("CustomerID")["InvoiceDate"].shift(1)
+    )
 
-    regression_data["DaysSincePreviousOrder"] = (regression_data["InvoiceDate"] - regression_data["PreviousInvoiceDate"]).dt.days
+    regression_data["DaysSincePreviousOrder"] = (
+        regression_data["InvoiceDate"] - regression_data["PreviousInvoiceDate"]
+    ).dt.days
 
     # Drop first order for each customer because there is no previous behaviour
-    regression_data = regression_data.dropna(subset=[
+    regression_data = regression_data.dropna(
+        subset=[
             "PreviousMonetaryValue",
             "PreviousAverageOrderValue",
             "PreviousOrderCount",
             "PreviousOrderValue",
             "DaysSincePreviousOrder"
         ]
-    )
+    ).copy()
 
     # Keep only useful regression columns
     regression_data = regression_data[
@@ -347,8 +370,6 @@ def create_regression_data(customer_sales_data):
             "InvoiceNo",
             "InvoiceDate",
             "Country",
-            'PreviousQuantity',
-            'PreviousUnitPrice',
             "PreviousMonetaryValue",
             "PreviousAverageOrderValue",
             "PreviousOrderCount",
@@ -361,7 +382,7 @@ def create_regression_data(customer_sales_data):
     # Round numeric values
     regression_data = regression_data.round(2)
 
-    print("This is your duplaicate data:" ,regression_data["InvoiceNo"].duplicated().sum())
+    print("This is your duplicate data:", regression_data["InvoiceNo"].duplicated().sum())
 
     # Save regression-ready CSV
     regression_data.to_csv("customer_regression_data.csv", index=False)
