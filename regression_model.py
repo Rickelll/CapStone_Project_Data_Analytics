@@ -12,7 +12,7 @@ print(dataset.head())
 print(dataset.columns)
 
 #The regression model does not use CustomerID, InvoiceNo, current MonetaryValue, or current AverageOrderValue as learning features. These columns are either identifiers or contain information from the current order. Instead, the model uses previous customer behaviour, such as previous monetary value, previous average order value, previous order count, previous order value, days since previous order, and country, to predict the current order value.
-X_features = ["PreviousMonetaryValue", "PreviousAverageOrderValue", "PreviousOrderCount", "PreviousOrderValue"]
+X_features = ["PreviousMonetaryValue", "PreviousAverageOrderValue", "PreviousOrderCount", "PreviousOrderValue", "PreviousQuantity", "PreviousUnitPrice"]
 
 #X is our training data and Y is our target data
 X = dataset[X_features].values
