@@ -32,7 +32,7 @@ print(y)
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2, random_state = 0)
 
 #Training our model
-regressor = DecisionTreeRegressor(random_state = 42)
+regressor = RandomForestRegressor(n_estimators=10, random_state=42)
 regressor.fit(X_train, y_train)
 
 #Making Predictions
@@ -106,3 +106,18 @@ print("R2 score:", round(r2,2))
 # Changing the random_state changed the train/test split and improved the score
 # slightly. However, the model still performed worse than RandomForestRegressor.
 # This suggests the Decision Tree model is unstable and sensitive to the data split.
+
+# Final Random Forest regression result:
+# Mean Absolute Error: 335.70
+# Mean Squared Error: 1328666.84
+# Root Mean Squared Error: 1152.68
+# R2 Score: 0.24
+
+# After rebuilding the regression dataset as one row per invoice, the final model
+# achieved an R2 score of 0.24. This is lower than the earlier leaked result, but
+# it is more reliable because duplicated product rows were removed.
+
+# The model shows that previous customer/order information has some relationship
+# with future OrderValue, but it is not strong enough to make highly accurate
+# predictions on its own. Future improvements could include product category,
+# seasonality, customer segment, and more detailed product-level features.
