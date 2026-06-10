@@ -7,12 +7,19 @@ import numpy as np
 dataset = pd.read_csv("customer_regression_data.csv")
 
 
+
 print(dataset.head())
 
 print(dataset.columns)
 
 #The regression model does not use CustomerID, InvoiceNo, current MonetaryValue, or current AverageOrderValue as learning features. These columns are either identifiers or contain information from the current order. Instead, the model uses previous customer behaviour, such as previous monetary value, previous average order value, previous order count, previous order value, days since previous order, and country, to predict the current order value.
-X_features = ["PreviousMonetaryValue", "PreviousAverageOrderValue", "PreviousOrderCount", "PreviousOrderValue", "PreviousQuantity", "PreviousUnitPrice"]
+X_features = ["PreviousQuantity",
+"PreviousUnitPrice",
+"PreviousMonetaryValue",
+"PreviousAverageOrderValue",
+"PreviousOrderCount",
+"PreviousOrderValue",
+"DaysSincePreviousOrder"]
 
 #X is our training data and Y is our target data
 X = dataset[X_features].values
@@ -25,7 +32,7 @@ print(y)
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2, random_state = 0)
 
 #Training our model
-regressor = RandomForestRegressor(n_estimators=100, random_state=42)
+regressor = RandomForestRegressor(n_estimators=10, random_state=42)
 regressor.fit(X_train, y_train)
 
 #Making Predictions
@@ -50,3 +57,12 @@ print("R2 score:", round(r2,2))
 
 #The Random Forest regression model was able to identify some relationship between previous customer behaviour and order value, but the prediction accuracy was limited. This suggests that previous customer behaviour alone is not enough to accurately predict future order value. Additional features such as product category, quantity, seasonality, and customer segment may improve future model performance.
 #Testing with product and quantity information
+
+#Test with invoices per row Result: Fail
+#Reason for fail:
+#Mean Absolute Error: 17.7
+#Mean Squared Error: 66477.29
+#Root Mean Squared Error: 257.83
+#R2 score: 0.97
+## repeated product rows from the same invoice. This can inflate performance scores, so the
+# regression dataset needs to be rebuilt as one row per invoice before final evaluation.

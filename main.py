@@ -361,6 +361,8 @@ def create_regression_data(customer_sales_data):
     # Round numeric values
     regression_data = regression_data.round(2)
 
+    print("This is your duplaicate data:" ,regression_data["InvoiceNo"].duplicated().sum())
+
     # Save regression-ready CSV
     regression_data.to_csv("customer_regression_data.csv", index=False)
 
