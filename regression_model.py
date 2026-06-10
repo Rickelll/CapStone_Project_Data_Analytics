@@ -32,7 +32,7 @@ print(y)
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2, random_state = 0)
 
 #Training our model
-regressor = DecisionTreeRegressor(random_state = 0)
+regressor = DecisionTreeRegressor(random_state = 42)
 regressor.fit(X_train, y_train)
 
 #Making Predictions
@@ -92,5 +92,17 @@ print("R2 score:", round(r2,2))
 #Root Mean Squared Error: 1147.09
 #R2 score: 0.25
 
-#Next Test: Testing with DecsionTreeRegressor
+# Next test: Testing with DecisionTreeRegressor
+# This model is being tested to compare its performance against the Random Forest Regressor.
+# The aim is to check whether a simpler tree-based regression model can predict OrderValue
+# using the selected features.
 
+# DecisionTreeRegressor test:
+# Mean Absolute Error: 392.54
+# Mean Squared Error: 1447295.93
+# Root Mean Squared Error: 1203.04
+# R2 Score: 0.18
+
+# Changing the random_state changed the train/test split and improved the score
+# slightly. However, the model still performed worse than RandomForestRegressor.
+# This suggests the Decision Tree model is unstable and sensitive to the data split.
