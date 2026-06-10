@@ -194,7 +194,7 @@ def sales_over_time(completed_purchases, canceled_orders):
     plt.title("Monthly Sales Revenue Over Time")
     plt.xlabel("Month")
     plt.ylabel("Revenue")
-    plt.xticks(rotation=45)
+    plt.xticks(rotation=0)
     plt.tight_layout()
     plt.show()
 
@@ -203,7 +203,7 @@ def sales_over_time(completed_purchases, canceled_orders):
     plt.title("Monthly Sales loss Over Time")
     plt.xlabel("Month")
     plt.ylabel("loss")
-    plt.xticks(rotation=45)
+    plt.xticks(rotation=0)
     plt.tight_layout()
     plt.show()
 
@@ -226,7 +226,7 @@ def sales_over_time(completed_purchases, canceled_orders):
     plt.title("Monthly Completed Sales vs Cancellation Value")
     plt.xlabel("Month")
     plt.ylabel("Value")
-    plt.xticks(rotation=45)
+    plt.xticks(rotation=0)
     plt.legend()
     plt.tight_layout()
     plt.show()
@@ -236,6 +236,28 @@ def sales_over_time(completed_purchases, canceled_orders):
     #Sales revenue increased by 105.75% between the first recorded month and the last complete month. The final month was excluded from the trend comparison because it appeared incomplete and caused a misleading drop in the graph.
     #Monthly sales revenue increased by 105.75% between the first complete month and the last complete month analysed. Sales fluctuated during the early months, but revenue increased strongly from September to November, reaching the highest monthly revenue in November. The final incomplete month was excluded to avoid misleading the trend analysis.
 #best months and worst months
+
+    #Completed sales revenue increased strongly over time, especially from September to November. Cancellation values fluctuated month to month but remained much lower than completed sales revenue. This suggests that although cancellations caused some revenue loss, they did not change the overall positive sales trend.
+
+#Top countries by completed Revenue
+
+def countries_by_completed_purchases(completed_revenue):
+    print("Countries by Completed Purchases:")
+
+    completed_purchases = completed_revenue.copy()
+
+    completed_purchases['RowValue'] = (
+        completed_purchases["Quantity"] * completed_purchases["UnitPrice"]
+    )
+#Top Products by completed revenue
+
+#Top customers by completed Revenue
+
+#One-Time buyes vs repeat buyers
+
+
+
+
 
 revenue(purchase_orders, canceled_orders, completed_purchases)
 sales_over_time(completed_purchases, canceled_orders)
