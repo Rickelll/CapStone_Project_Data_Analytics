@@ -11,6 +11,11 @@ purchase_orders = pd.read_csv("purchase_orders.csv")
 canceled_orders = pd.read_csv("cancelled_orders.csv")
 completed_purchases = pd.read_csv("completed_purchase_orders.csv")
 
+def save_tableau_csv(dataframe, filename):
+    file_path = TABLEAU_DATA_PATH / filename
+    dataframe.to_csv(file_path, index=False)
+    print(f"Saved Tableau file: {file_path}")
+
 def revenue(purchase_orders, canceled_orders, completed_purchases):
     # Create revenue values for each row
     total_revenue_purchases = purchase_orders["Quantity"] * purchase_orders["UnitPrice"]
