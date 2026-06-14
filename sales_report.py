@@ -226,6 +226,16 @@ def sales_over_time(completed_purchases, canceled_orders):
     first_month_revenue = monthly_sales_complete["MonthlyRevenue"].iloc[0]
     last_month_revenue = monthly_sales_complete["MonthlyRevenue"].iloc[-1]
 
+    growth = ((last_month_revenue - first_month_revenue) / first_month_revenue) * 100
+
+    sales_growth_kpi = pd.DataFrame({
+        "Metric": ["Revenue Growth"],
+        "Value": [round(growth, 2)]
+    })
+
+    sales_growth_kpi.to_csv("tableau_data/sales_growth_kpi.csv", index=False)
+    print(sales_growth_kpi)
+
     first_month_loss = monthly_cancellations_complete["MonthlyRevenue"].iloc[0]
     last_month_loss =  monthly_cancellations_complete["MonthlyRevenue"].iloc[-1]
 
