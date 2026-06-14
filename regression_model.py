@@ -4,10 +4,11 @@ from sklearn.tree import DecisionTreeRegressor
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 import numpy as np
+import matplotlib.pyplot as plt
 
 dataset = pd.read_csv("customer_regression_data.csv")
 
-
+print(dataset.isnull().sum())
 
 print(dataset.head())
 
@@ -121,3 +122,20 @@ print("R2 score:", round(r2,2))
 # with future OrderValue, but it is not strong enough to make highly accurate
 # predictions on its own. Future improvements could include product category,
 # seasonality, customer segment, and more detailed product-level features
+
+
+plt.figure(figsize=(8, 6))
+
+plt.scatter(y_test, y_pred)
+
+min_value = min(y_test.min(), y_pred.min())
+max_value = max(y_test.max(), y_pred.max())
+
+plt.plot([min_value, max_value], [min_value, max_value])
+
+plt.xlabel("Actual Order Value")
+plt.ylabel("Predicted Order Value")
+plt.title("Actual vs Predicted Order Value")
+plt.show()
+
+#The regression model was able to predict smaller order values better than larger order values. However, the scatter plot shows that many predictions are far away from the perfect prediction line, especially for high-value orders. This means the model had limited predictive power and struggled with unusual or very large purchases.
