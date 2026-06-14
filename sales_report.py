@@ -283,6 +283,8 @@ def countries_by_completed_purchases(completed_revenue):
         ascending=False
     )
 
+    save_tableau_csv(country_revenue, "country_revenue.csv")
+
     print(country_revenue.head(10))
 
     top_10_countries = country_revenue.head(10)
