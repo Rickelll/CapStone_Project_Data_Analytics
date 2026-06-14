@@ -184,3 +184,5 @@ plt.title("Actual vs Predicted Order Value")
 plt.show()
 
 #The regression model was able to predict smaller order values better than larger order values. However, the scatter plot shows that many predictions are far away from the perfect prediction line, especially for high-value orders. This means the model had limited predictive power and struggled with unusual or very large purchases.
+
+#The regression model had limited predictive power. Most predictions were concentrated around lower order values, and the model struggled to predict larger orders accurately. The scatter plot shows that many high-value orders fall far from the perfect prediction line, meaning the model often under-predicted expensive purchases.

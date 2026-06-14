@@ -229,6 +229,30 @@ def sales_over_time(completed_purchases, canceled_orders):
     first_month_loss = monthly_cancellations_complete["MonthlyRevenue"].iloc[0]
     last_month_loss =  monthly_cancellations_complete["MonthlyRevenue"].iloc[-1]
 
+    loss_change = last_month_loss - first_month_loss
+
+    loss_percentage_change = (loss_change / first_month_loss) * 100
+
+    cancellation_loss_kpi = pd.DataFrame({
+        "Metric": [
+            "First Month Cancellation Loss",
+            "Last Month Cancellation Loss",
+            "Cancellation Loss Change",
+            "Cancellation Loss Percentage Change"
+        ],
+        "Value": [
+            round(first_month_loss, 2),
+            round(last_month_loss, 2),
+            round(loss_change, 2),
+            round(loss_percentage_change, 2)
+        ]
+    })
+
+    cancellation_loss_kpi.to_csv(
+        "tableau_data/cancellation_loss_kpi.csv",
+        index=False
+    )
+
     revenue_change = last_month_revenue - first_month_revenue
     percentage_change = (revenue_change / first_month_revenue) * 100
 
