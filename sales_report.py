@@ -167,6 +167,27 @@ def sales_over_time(completed_purchases, canceled_orders):
 
     monthly_cancellations_complete = monthly_cancellations.iloc[:-1]
 
+    monthly_tableau_data = monthly_sales_complete.merge(
+        monthly_cancellations_complete,
+        on="Month",
+        how="left",
+        suffixes=("_CompletedSales", "_Cancellations")
+    )
+
+    monthly_tableau_data = monthly_tableau_data.rename(
+        columns={"MonthlyRevenue_CompletedSales": "CompletedRevenue",
+                 "TotalInvoices_CompletedSales": "CompletedInvoices",
+                 "AverageInvoiceValue_CompletedSales": "CompletedAverageInvoiceValue",
+                 "MonthlyRevenue_Cancellations": "CancellationValue",
+                 "TotalInvoices_Cancellations": "CancelledInvoices",
+                 "AverageInvoiceValue_Cancellations": "CancelledAverageInvoiceValue"
+        }
+    )
+
+    monthly_tableau_data = monthly_tableau_data.fillna(0)
+
+    save_tableau_csv(monthly_tableau_data, "monthly_sales_and_cancellations.csv")
+
     first_month_revenue = monthly_sales_complete["MonthlyRevenue"].iloc[0]
     last_month_revenue = monthly_sales_complete["MonthlyRevenue"].iloc[-1]
 
