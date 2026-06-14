@@ -101,6 +101,41 @@ def revenue(purchase_orders, canceled_orders, completed_purchases):
     #The average recorded purchase invoice value was €480.87. After removing purchase invoices that appeared to be fully reversed by cancellation invoices, the average completed purchase invoice value was €464.75. This cleaned value gives a more realistic view of successful customer purchases and was used for customer behaviour analysis and clustering.
     print(completed_purchases.columns)
 
+    revenue_summary = pd.DataFrame(
+        {
+            "Metric": [
+                "Gross Purchase Revenue",
+                "Revenue Lost Through Cancellations",
+                "Net Revenue",
+                "Average Recorded Purchase Invoice Value",
+                "Average Cancelled Invoice Value",
+                "Average Completed Purchase Invoice Value",
+                "Total Invoices",
+                "Net Average Invoice Value",
+                "Largest Completed Purchase Invoice",
+                "Smallest Completed Purchase Invoice",
+                "Largest Cancelled Invoice",
+                "Smallest Cancelled Invoice"
+            ],
+            "Value": [
+                round(purchase_revenue, 2),
+                round(abs(canceled_revenue), 2),
+                round(net_revenue, 2),
+                round(average_order_purchased_value, 2),
+                round(average_order_canceled_value, 2),
+                round(average_completed_purchase_invoice_value, 2),
+                total_invoices,
+                round(net_average_invoice_value, 2),
+                round(biggest_sale, 2),
+                round(smallest_sale, 2),
+                round(biggest_canceled, 2),
+                round(smallest_canceled, 2)
+            ]
+        }
+    )
+
+    save_tableau_csv(revenue_summary, "revenue_summary.csv")
+
     return net_revenue
 
 
