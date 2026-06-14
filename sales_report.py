@@ -1,6 +1,10 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 from main import cancelled_orders
+from pathlib import Path
+
+TABLEAU_DATA_PATH = Path("tableau_data")
+TABLEAU_DATA_PATH.mkdir(parents=True, exist_ok=True)
 
 #Reading the datasets
 purchase_orders = pd.read_csv("purchase_orders.csv")
