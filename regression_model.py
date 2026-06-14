@@ -14,6 +14,8 @@ print(dataset.head())
 
 print(dataset.columns)
 
+row_info = dataset[["CustomerID", "InvoiceNo", "InvoiceDate"]]
+
 #The regression model does not use CustomerID, InvoiceNo, current MonetaryValue, or current AverageOrderValue as learning features. These columns are either identifiers or contain information from the current order. Instead, the model uses previous customer behaviour, such as previous monetary value, previous average order value, previous order count, previous order value, days since previous order, and country, to predict the current order value.
 X_features = ["PreviousAverageOrderValue",
               "PreviousMonetaryValue",
@@ -24,13 +26,13 @@ X_features = ["PreviousAverageOrderValue",
 
 #X is our training data and Y is our target data
 X = dataset[X_features].values
-y = dataset.iloc[:, -1].values
+y = dataset['OrderValue']
 
 print(X)
 print(y)
 
 #Splitting our training data for Random Forest Regression
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2, random_state = 0)
+X_train, X_test, y_train, y_test = train_test_split(X, y,test_size = 0.2, random_state = 0)
 
 #Training our model
 regressor = RandomForestRegressor(n_estimators=10, random_state=42)
@@ -53,6 +55,49 @@ print("R2 score:", round(r2,2))
 #Random Forest regression test using previous customer behaviour only:
 #Features used: PreviousMonetaryValue, PreviousAverageOrderValue,
 #PreviousOrderCount, and PreviousOrderValue.
+
+regression_predictions = pd.DataFrame({
+    "ActualOrderValue": y_test,
+    "PredictedOrderValue": y_pred
+})
+
+regression_predictions["PredictionError"] = (
+    regression_predictions["ActualOrderValue"]
+    - regression_predictions["PredictedOrderValue"]
+)
+
+regression_predictions["AbsoluteError"] = regression_predictions["PredictionError"].abs()
+
+regression_predictions = regression_predictions.round(2)
+
+regression_predictions.to_csv(
+    "tableau_data/regression_predictions.csv",
+    index=False
+)
+
+print("Saved regression_predictions.csv")
+
+regression_metrics = pd.DataFrame({
+    "Metric": [
+        "Mean Absolute Error",
+        "Mean Squared Error",
+        "Root Mean Squared Error",
+        "R2 Score"
+    ],
+    "Value": [
+        round(mae, 2),
+        round(mse, 2),
+        round(rmse, 2),
+        round(r2, 2)
+    ]
+})
+
+regression_metrics.to_csv(
+    "tableau_data/regression_metrics.csv",
+    index=False
+)
+
+print("Saved regression_metrics.csv")
 
 
 #Result:
