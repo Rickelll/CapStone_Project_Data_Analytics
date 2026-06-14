@@ -360,7 +360,6 @@ def countries_by_completed_purchases(completed_revenue):
 
     #Completed purchase revenue was grouped by country to identify which markets contributed the most to successful sales. Reversed and cancelled purchases were excluded so the country revenue figures reflect completed customer transactions.
 
-countries_by_completed_purchases(completed_purchases)
 
 #Top Products by completed revenue
 def top_products_by_completed_purchases(completed_purchases):

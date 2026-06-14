@@ -2,6 +2,7 @@ import pandas as pd
 from sklearn.cluster import KMeans
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import silhouette_score, confusion_matrix, classification_report
+import csv
 
 dataset = pd.read_csv('customer_order_sales_data.csv')
 
@@ -46,7 +47,15 @@ def percentile_customer_based_segmentation(dataset):
     print(dataset['Customer_Status'].head(20))
     print(dataset.columns)
 
-percentile_customer_based_segmentation(dataset)
+    return dataset
+
+
+dataset = percentile_customer_based_segmentation(dataset)
+
+dataset.to_csv("customer_order_sales_data.csv", index=False)
+
+print("Customer_Status column added to customer_order_sales_data.csv")
+print(dataset["Customer_Status"].value_counts())
 
 #Mapping all customer status to use for K-means clustering for human visualisation
 status_mapping ={
