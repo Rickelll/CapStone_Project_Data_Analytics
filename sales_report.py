@@ -333,6 +333,8 @@ def top_products_by_completed_purchases(completed_purchases):
     # Sort by highest revenue
     product_revenue = product_revenue.sort_values(by="CompletedRevenue",ascending=False)
 
+    save_tableau_csv(product_revenue, "product_revenue.csv")
+
     print(product_revenue.head(10))
 
     top_10_products = product_revenue.head(10)
