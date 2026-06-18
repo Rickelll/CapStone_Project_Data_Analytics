@@ -3,6 +3,8 @@ import pandas as pd
 
 st.title('Customer Order Search')
 
+st.sidebar.header('User Selection')
+
 def load_data():
     purchased_orders = pd.read_csv('completed_purchase_orders.csv')
 
