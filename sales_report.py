@@ -443,8 +443,6 @@ def top_products_by_completed_purchases(completed_purchases):
 
     return product_revenue
 
-#One-Time buyes vs repeat buyers
-
 
 print("Sales Report of Customer Segmentation")
 
