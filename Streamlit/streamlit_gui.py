@@ -1,19 +1,46 @@
 import streamlit as st
 import pandas as pd
+from streamlit_option_menu import option_menu
 
-st.title('Customer Order Search')
 
-st.sidebar.header('User Selection')
+st.sidebar.header('Customer Segmentation Analysis')
 
-def load_data():
+with st.sidebar:
+    selected = option_menu(
+        menu_title = "Menu",
+        options = ["Home","Customer Order Search","About"]
+    )
+
+def load_order_data():
     purchased_orders = pd.read_csv('completed_purchase_orders.csv')
 
     cancelled_orders = pd.read_csv('cancelled_orders.csv')
 
     return purchased_orders, cancelled_orders
 
+def home_page():
+    st.header('Home Page')
+    st.write("This app analyses customer sales data to understand business revenue, cancellation losses, top-performing countries/products, customer value groups, and order value prediction using machine learning.")
+
+    st.subheader('Main Questions Answered')
+
+    st.write('How much revenue did the business make?')
+
+    st.write('Are sales increasing or decreasing?')
+
+    st.write('How much revenue was lost through cancellations?')
+
+    st.write('Which countries produce the most revenue?')
+
+    st.write('Which customer groups are most valuable?')
+
+    st.write('How well did the regression model predict order value?')
+
+
 def search_customer_order():
-    purchased_orders, cancelled_orders = load_data()
+    st.title('Customer Order Search')
+
+    purchased_orders, cancelled_orders = load_order_data()
 
     order_type = st.selectbox("Select Order Type", ["Purchased Orders", "Cancelled Orders"])
 
@@ -46,10 +73,13 @@ def search_customer_order():
         else:
             st.error(f'No Order Found for Invoice Number: {invoice_no}')
 
+if __name__ == '__main__':
+    if selected=="Home":
+        home_page()
+    elif selected=="Customer Order Search":
+        search_customer_order()
 
 
-
-search_customer_order()
 
 
 
