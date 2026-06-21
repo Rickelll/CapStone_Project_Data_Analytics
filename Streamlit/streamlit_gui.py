@@ -429,49 +429,88 @@ def customer_segmentation():
 
     st.divider()
 
-    centered_subheader("Small explanation")
-    centered_text('Customers were grouped using frequency, recency, average order value, and monetary value.')
+    centered_subheader("Customer Grouping Explanation")
+    centered_text(
+        "Customers were grouped using frequency, recency, average order value, and monetary value."
+    )
 
     st.divider()
 
-    centered_subheader("KPI/Overview:")
+    centered_subheader("KPI Overview")
 
-    col1, col2, col3, col4 = st.columns(4)
+    col1, col2, col3, col4 = st.columns(4, gap="large")
 
-    left, middle, right = st.columns([1, 10, 1])
+    with col1:
+        components.html(total_customers_kpi, height=220, scrolling=False)
 
-    with left:
-        with col1:
-            components.html(total_customers_kpi, height=220, scrolling=False)
+    with col2:
+        components.html(vip_customers_kpi, height=220, scrolling=False)
 
-    with middle:
-        with col2:
-            components.html(vip_customers_kpi, height=220, scrolling=False)
+    with col3:
+        components.html(loyal_customers_kpi, height=220, scrolling=False)
 
-    with middle:
-        with col3:
-            components.html(loyal_customers_kpi, height=220, scrolling=False)
-
-    with right:
-        with col4:
-            components.html(at_risk_customers_kpi, height=220, scrolling=False)
+    with col4:
+        components.html(at_risk_customers_kpi, height=220, scrolling=False)
 
     st.divider()
 
-    centered_subheader("Charts")
+    centered_subheader("Customer Value Charts")
 
-    col5, col7 = st.columns(2)
-    left,right = st.columns([1,1])
+    col5, col6 = st.columns(2, gap="large")
 
-    with left:
-        with col5:
-            components.html(customer_group_total_value, height=600, scrolling=False)
+    with col5:
+        components.html(customer_group_total_value, height=600, scrolling=False)
 
-    with right:
-        with col7:
-            components.html(customer_group_total_per_customer, height=600, scrolling=False)
+    with col6:
+        components.html(customer_group_total_per_customer, height=600, scrolling=False)
 
     st.divider()
+
+    centered_subheader("Customer Status Filter")
+
+    customer_status_data = load_customer_status_data()
+
+    status_options = sorted(
+        customer_status_data["Customer_Status"].dropna().unique()
+    )
+
+    selected_statuses = st.multiselect(
+        "Filter by Customer Status",
+        status_options,
+        default=status_options
+    )
+
+    if selected_statuses:
+        filtered_customers = customer_status_data[
+            customer_status_data["Customer_Status"].isin(selected_statuses)
+        ].copy()
+    else:
+        filtered_customers = customer_status_data.copy()
+
+    display_df = filtered_customers[
+        [
+            "CustomerID",
+            "Frequency",
+            "Recency",
+            "TotalQuantity",
+            "AverageOrderValue",
+            "MonetaryValue",
+            "Customer_Status"
+        ]
+    ].copy()
+
+    display_df = display_df.drop_duplicates(subset=["CustomerID"])
+
+    display_df["Recency"] = display_df["Recency"].astype(int).astype(str) + " days ago"
+
+    st.write(f"Showing {len(display_df)} customers")
+
+    st.dataframe(
+        display_df,
+        use_container_width=True,
+        hide_index=True
+    )
+
 
 
 
