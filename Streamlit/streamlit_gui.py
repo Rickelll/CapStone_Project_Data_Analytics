@@ -85,6 +85,10 @@ def load_order_data():
 
     return purchased_orders, cancelled_orders
 
+def load_customer_status_data():
+    customer_status_data = pd.read_csv('customer_order_sales_data.csv')
+    return customer_status_data
+
 def format_invoice_date(date):
     date = pd.to_datetime(date)
 
