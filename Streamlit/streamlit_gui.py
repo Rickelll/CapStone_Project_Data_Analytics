@@ -82,6 +82,18 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
+st.markdown("""
+<style>
+h1, h2, h3 {
+    text-align: center;
+}
+
+p {
+    text-align: center;
+}
+</style>
+""", unsafe_allow_html=True)
+
 with st.sidebar:
     selected = option_menu(
         menu_title = "Menu",
