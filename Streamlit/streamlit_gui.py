@@ -18,53 +18,19 @@ average_invoices_kpi = '''<div class='tableauPlaceholder' id='viz1782001711676' 
 
 total_invoices_kpi = '''<div class='tableauPlaceholder' id='viz1782001655034' style='position: relative'><noscript><a href='#'><img alt='Total Invoices ' src='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;Ca&#47;Capstone_Project_Code-Institue_backup&#47;TotalInvoices&#47;1_rss.png' style='border: none' /></a></noscript><object class='tableauViz'  style='display:none;'><param name='host_url' value='https%3A%2F%2Fpublic.tableau.com%2F' /> <param name='embed_code_version' value='3' /> <param name='site_root' value='' /><param name='name' value='Capstone_Project_Code-Institue_backup&#47;TotalInvoices' /><param name='tabs' value='no' /><param name='toolbar' value='yes' /><param name='static_image' value='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;Ca&#47;Capstone_Project_Code-Institue_backup&#47;TotalInvoices&#47;1.png' /> <param name='animate_transition' value='yes' /><param name='display_static_image' value='yes' /><param name='display_spinner' value='yes' /><param name='display_overlay' value='yes' /><param name='display_count' value='yes' /><param name='language' value='en-GB' /><param name='filter' value='publish=yes' /></object></div>                <script type='text/javascript'>                    var divElement = document.getElementById('viz1782001655034');                    var vizElement = divElement.getElementsByTagName('object')[0];                    vizElement.style.width='100%';vizElement.style.height=(divElement.offsetWidth*0.75)+'px';                    var scriptElement = document.createElement('script');                    scriptElement.src = 'https://public.tableau.com/javascripts/api/viz_v1.js';                    vizElement.parentNode.insertBefore(scriptElement, vizElement);                </script>'''
 
-monthly_completed_cancelled_revenue = """
-<div class='tableauPlaceholder' id='monthlyRevenueCancellationViz' style='position: relative; width: 100%;'>
-    <noscript>
-        <a href='#'>
-            <img 
-                alt='Monthly Revenue vs Cancellation Loss'
-                src='https://public.tableau.com/static/images/Ca/Capstone_Project_Code-Institue_backup/RevenuevsCancellationLoss/1_rss.png'
-                style='border: none; width: 100%;'
-            />
-        </a>
-    </noscript>
-
-    <object class='tableauViz' style='display:none; width:100%; height:650px;'>
-        <param name='host_url' value='https%3A%2F%2Fpublic.tableau.com%2F' />
-        <param name='embed_code_version' value='3' />
-        <param name='site_root' value='' />
-        <param name='name' value='Capstone_Project_Code-Institue_backup/RevenuevsCancellationLoss' />
-        <param name='tabs' value='no' />
-        <param name='toolbar' value='no' />
-        <param name='static_image' value='https://public.tableau.com/static/images/Ca/Capstone_Project_Code-Institue_backup/RevenuevsCancellationLoss/1.png' />
-        <param name='animate_transition' value='yes' />
-        <param name='display_static_image' value='yes' />
-        <param name='display_spinner' value='yes' />
-        <param name='display_overlay' value='yes' />
-        <param name='display_count' value='no' />
-        <param name='language' value='en-GB' />
-        <param name='filter' value='publish=yes' />
-    </object>
-</div>
-
-<script type='text/javascript'>
-    var divElement = document.getElementById('monthlyRevenueCancellationViz');
-    var vizElement = divElement.getElementsByTagName('object')[0];
-
-    vizElement.style.width = '100%';
-    vizElement.style.height = '650px';
-
-    var scriptElement = document.createElement('script');
-    scriptElement.src = 'https://public.tableau.com/javascripts/api/viz_v1.js';
-
-    vizElement.parentNode.insertBefore(scriptElement, vizElement);
-</script>
-"""
+monthly_completed_cancelled_revenue = """<div class='tableauPlaceholder' id='monthlyRevenueCancellationViz' style='position: relative; width: 100%;'>   <noscript>       <a href='#'>           <img                 alt='Monthly Revenue vs Cancellation Loss'                src='https://public.tableau.com/static/images/Ca/Capstone_Project_Code-Institue_backup/RevenuevsCancellationLoss/1_rss.png'                style='border: none; width: 100%;'            />     </a>    </noscript>    <object class='tableauViz' style='display:none; width:100%; height:650px;'>       <param name='host_url' value='https%3A%2F%2Fpublic.tableau.com%2F' />        <param name='embed_code_version' value='3' />        <param name='site_root' value='' />        <param name='name' value='Capstone_Project_Code-Institue_backup/RevenuevsCancellationLoss' />        <param name='tabs' value='no' />        <param name='toolbar' value='no' />        <param name='static_image' value='https://public.tableau.com/static/images/Ca/Capstone_Project_Code-Institue_backup/RevenuevsCancellationLoss/1.png' />        <param name='animate_transition' value='yes' />        <param name='display_static_image' value='yes' />        <param name='display_spinner' value='yes' />       <param name='display_overlay' value='yes' />        <param name='display_count' value='no' />        <param name='language' value='en-GB' />        <param name='filter' value='publish=yes' />    </object></div><script type='text/javascript'>   var divElement = document.getElementById('monthlyRevenueCancellationViz');    var vizElement = divElement.getElementsByTagName('object')[0];    vizElement.style.width = '100%';    vizElement.style.height = '650px';    var scriptElement = document.createElement('script');scriptElement.src = 'https://public.tableau.com/javascripts/api/viz_v1.js';vizElement.parentNode.insertBefore(scriptElement, vizElement);</script>"""
 
 top10_countries_by_completed_revenue = '''<div class='tableauPlaceholder' id='viz1782003023595' style='position: relative'><noscript><a href='#'><img alt='Top Countries by Completed Revenue ' src='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;Ca&#47;Capstone_Project_Code-Institue_backup&#47;TopCountriesbycompletedRevenueBarChart&#47;1_rss.png' style='border: none' /></a></noscript><object class='tableauViz'  style='display:none;'><param name='host_url' value='https%3A%2F%2Fpublic.tableau.com%2F' /> <param name='embed_code_version' value='3' /> <param name='site_root' value='' /><param name='name' value='Capstone_Project_Code-Institue_backup&#47;TopCountriesbycompletedRevenueBarChart' /><param name='tabs' value='no' /><param name='toolbar' value='yes' /><param name='static_image' value='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;Ca&#47;Capstone_Project_Code-Institue_backup&#47;TopCountriesbycompletedRevenueBarChart&#47;1.png' /> <param name='animate_transition' value='yes' /><param name='display_static_image' value='yes' /><param name='display_spinner' value='yes' /><param name='display_overlay' value='yes' /><param name='display_count' value='yes' /><param name='language' value='en-GB' /><param name='filter' value='publish=yes' /></object></div>                <script type='text/javascript'>                    var divElement = document.getElementById('viz1782003023595');                    var vizElement = divElement.getElementsByTagName('object')[0];                    vizElement.style.width='100%';vizElement.style.height=(divElement.offsetWidth*0.75)+'px';                    var scriptElement = document.createElement('script');                    scriptElement.src = 'https://public.tableau.com/javascripts/api/viz_v1.js';                    vizElement.parentNode.insertBefore(scriptElement, vizElement);                </script>'''
 
 top10_products_by_completed_revenue = '''<div class='tableauPlaceholder' id='viz1782003113916' style='position: relative'><noscript><a href='#'><img alt='Which products produce the most revenue? ' src='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;Ca&#47;Capstone_Project_Code-Institue_backup&#47;TopProductsbyRevenueBarChart&#47;1_rss.png' style='border: none' /></a></noscript><object class='tableauViz'  style='display:none;'><param name='host_url' value='https%3A%2F%2Fpublic.tableau.com%2F' /> <param name='embed_code_version' value='3' /> <param name='site_root' value='' /><param name='name' value='Capstone_Project_Code-Institue_backup&#47;TopProductsbyRevenueBarChart' /><param name='tabs' value='no' /><param name='toolbar' value='yes' /><param name='static_image' value='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;Ca&#47;Capstone_Project_Code-Institue_backup&#47;TopProductsbyRevenueBarChart&#47;1.png' /> <param name='animate_transition' value='yes' /><param name='display_static_image' value='yes' /><param name='display_spinner' value='yes' /><param name='display_overlay' value='yes' /><param name='display_count' value='yes' /><param name='language' value='en-GB' /><param name='filter' value='publish=yes' /></object></div>                <script type='text/javascript'>                    var divElement = document.getElementById('viz1782003113916');                    var vizElement = divElement.getElementsByTagName('object')[0];                    vizElement.style.width='100%';vizElement.style.height=(divElement.offsetWidth*0.75)+'px';                    var scriptElement = document.createElement('script');                    scriptElement.src = 'https://public.tableau.com/javascripts/api/viz_v1.js';                    vizElement.parentNode.insertBefore(scriptElement, vizElement);                </script>'''
+
+total_customers_kpi = '''<div class='tableauPlaceholder' id='viz1782006348136' style='position: relative'><noscript><a href='#'><img alt='Total Customers KPI ' src='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;Ca&#47;Capstone_Project_Code-Institue_backup&#47;TotalCustomersKPI&#47;1_rss.png' style='border: none' /></a></noscript><object class='tableauViz'  style='display:none;'><param name='host_url' value='https%3A%2F%2Fpublic.tableau.com%2F' /> <param name='embed_code_version' value='3' /> <param name='site_root' value='' /><param name='name' value='Capstone_Project_Code-Institue_backup&#47;TotalCustomersKPI' /><param name='tabs' value='no' /><param name='toolbar' value='yes' /><param name='static_image' value='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;Ca&#47;Capstone_Project_Code-Institue_backup&#47;TotalCustomersKPI&#47;1.png' /> <param name='animate_transition' value='yes' /><param name='display_static_image' value='yes' /><param name='display_spinner' value='yes' /><param name='display_overlay' value='yes' /><param name='display_count' value='yes' /><param name='language' value='en-GB' /><param name='filter' value='publish=yes' /></object></div>                <script type='text/javascript'>                    var divElement = document.getElementById('viz1782006348136');                    var vizElement = divElement.getElementsByTagName('object')[0];                    vizElement.style.width='100%';vizElement.style.height=(divElement.offsetWidth*0.75)+'px';                    var scriptElement = document.createElement('script');                    scriptElement.src = 'https://public.tableau.com/javascripts/api/viz_v1.js';                    vizElement.parentNode.insertBefore(scriptElement, vizElement);                </script>'''
+
+vip_customers_kpi = '''<div class='tableauPlaceholder' id='viz1782006361412' style='position: relative'><noscript><a href='#'><img alt='VIP customers ' src='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;Ca&#47;Capstone_Project_Code-Institue_backup&#47;VIPcustomers&#47;1_rss.png' style='border: none' /></a></noscript><object class='tableauViz'  style='display:none;'><param name='host_url' value='https%3A%2F%2Fpublic.tableau.com%2F' /> <param name='embed_code_version' value='3' /> <param name='site_root' value='' /><param name='name' value='Capstone_Project_Code-Institue_backup&#47;VIPcustomers' /><param name='tabs' value='no' /><param name='toolbar' value='yes' /><param name='static_image' value='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;Ca&#47;Capstone_Project_Code-Institue_backup&#47;VIPcustomers&#47;1.png' /> <param name='animate_transition' value='yes' /><param name='display_static_image' value='yes' /><param name='display_spinner' value='yes' /><param name='display_overlay' value='yes' /><param name='display_count' value='yes' /><param name='language' value='en-GB' /><param name='filter' value='publish=yes' /></object></div>                <script type='text/javascript'>                    var divElement = document.getElementById('viz1782006361412');                    var vizElement = divElement.getElementsByTagName('object')[0];                    vizElement.style.width='100%';vizElement.style.height=(divElement.offsetWidth*0.75)+'px';                    var scriptElement = document.createElement('script');                    scriptElement.src = 'https://public.tableau.com/javascripts/api/viz_v1.js';                    vizElement.parentNode.insertBefore(scriptElement, vizElement);                </script>'''
+
+loyal_customers_kpi = '''<div class='tableauPlaceholder' id='viz1782006389496' style='position: relative'><noscript><a href='#'><img alt='Loyal Customers ' src='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;Ca&#47;Capstone_Project_Code-Institue_backup&#47;LoyalCustomers&#47;1_rss.png' style='border: none' /></a></noscript><object class='tableauViz'  style='display:none;'><param name='host_url' value='https%3A%2F%2Fpublic.tableau.com%2F' /> <param name='embed_code_version' value='3' /> <param name='site_root' value='' /><param name='name' value='Capstone_Project_Code-Institue_backup&#47;LoyalCustomers' /><param name='tabs' value='no' /><param name='toolbar' value='yes' /><param name='static_image' value='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;Ca&#47;Capstone_Project_Code-Institue_backup&#47;LoyalCustomers&#47;1.png' /> <param name='animate_transition' value='yes' /><param name='display_static_image' value='yes' /><param name='display_spinner' value='yes' /><param name='display_overlay' value='yes' /><param name='display_count' value='yes' /><param name='language' value='en-GB' /><param name='filter' value='publish=yes' /></object></div>                <script type='text/javascript'>                    var divElement = document.getElementById('viz1782006389496');                    var vizElement = divElement.getElementsByTagName('object')[0];                    vizElement.style.width='100%';vizElement.style.height=(divElement.offsetWidth*0.75)+'px';                    var scriptElement = document.createElement('script');                    scriptElement.src = 'https://public.tableau.com/javascripts/api/viz_v1.js';                    vizElement.parentNode.insertBefore(scriptElement, vizElement);                </script>'''
+
+at_risk_customers_kpi = '''<div class='tableauPlaceholder' id='viz1782006400525' style='position: relative'><noscript><a href='#'><img alt='At Risk Customers ' src='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;Ca&#47;Capstone_Project_Code-Institue_backup&#47;AtRiskCustomers&#47;1_rss.png' style='border: none' /></a></noscript><object class='tableauViz'  style='display:none;'><param name='host_url' value='https%3A%2F%2Fpublic.tableau.com%2F' /> <param name='embed_code_version' value='3' /> <param name='site_root' value='' /><param name='name' value='Capstone_Project_Code-Institue_backup&#47;AtRiskCustomers' /><param name='tabs' value='no' /><param name='toolbar' value='yes' /><param name='static_image' value='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;Ca&#47;Capstone_Project_Code-Institue_backup&#47;AtRiskCustomers&#47;1.png' /> <param name='animate_transition' value='yes' /><param name='display_static_image' value='yes' /><param name='display_spinner' value='yes' /><param name='display_overlay' value='yes' /><param name='display_count' value='yes' /><param name='language' value='en-GB' /><param name='filter' value='publish=yes' /></object></div>                <script type='text/javascript'>                    var divElement = document.getElementById('viz1782006400525');                    var vizElement = divElement.getElementsByTagName('object')[0];                    vizElement.style.width='100%';vizElement.style.height=(divElement.offsetWidth*0.75)+'px';                    var scriptElement = document.createElement('script');                    scriptElement.src = 'https://public.tableau.com/javascripts/api/viz_v1.js';                    vizElement.parentNode.insertBefore(scriptElement, vizElement);                </script>'''
 
 st.sidebar.header('Customer Segmentation Analysis')
 st.set_page_config(
@@ -105,7 +71,7 @@ def centered_text(text):
 with st.sidebar:
     selected = option_menu(
         menu_title = "Menu",
-        options = ["Home","Customer Order Search", "Sales Report","About"]
+        options = ["Home","Customer Order Search", "Sales Report","Customer Segmentation","About"]
     )
 
 def load_order_data():
@@ -345,6 +311,42 @@ def sales_report():
     with right:
         with col8:
             components.html(top10_products_by_completed_revenue, height=500, scrolling=False)
+
+def customer_segmentation():
+    centered_title("Customer Segmentation")
+
+    st.divider()
+
+    centered_subheader("Small explanation")
+    st.write('Customers were grouped using frequency, recency, average order value, and monetary value.')
+
+    st.divider()
+
+    centered_subheader("KPI/Overview:")
+
+    col1, col2, col3, col4 = st.columns(4)
+
+    left, middle, right = st.columns([1, 10, 1])
+
+    with left:
+        with col1:
+            components.html(total_customers_kpi, height=220, scrolling=False)
+
+    with middle:
+        with col2:
+            components.html(vip_customers_kpi, height=220, scrolling=False)
+
+    with middle:
+        with col3:
+            components.html(loyal_customers_kpi, height=220, scrolling=False)
+
+    with right:
+        with col4:
+            components.html(at_risk_customers_kpi, height=220, scrolling=False)
+
+    st.divider()
+
+
 
 if __name__ == '__main__':
     if selected=="Home":
