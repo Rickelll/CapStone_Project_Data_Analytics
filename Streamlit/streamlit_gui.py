@@ -87,6 +87,8 @@ def load_order_data():
 
 def load_customer_status_data():
     customer_status_data = pd.read_csv('customer_order_sales_data.csv')
+
+    customer_status_data['CustomerID'] = customer_status_data['CustomerID'].astype(str).str.strip()
     return customer_status_data
 
 def format_invoice_date(date):
@@ -186,27 +188,129 @@ def show_order_popup(selected_data, order_type):
             f"meaning €{abs(selected_data['Order_Value']):.2f} was refunded or lost from revenue."
         )
 
+def show_customer_mini_dashboard(customer_id, customer_status_data, purchased_orders):
+    customer_status_data = customer_status_data.copy()
+    purchased_orders = purchased_orders.copy()
+
+    customer_status_data["CustomerID"] = (
+        pd.to_numeric(customer_status_data["CustomerID"], errors="coerce")
+        .astype("Int64")
+        .astype(str)
+    )
+
+    purchased_orders["CustomerID"] = (
+        pd.to_numeric(purchased_orders["CustomerID"], errors="coerce")
+        .astype("Int64")
+        .astype(str)
+    )
+
+    customer_details = customer_status_data[
+        customer_status_data["CustomerID"] == customer_id
+    ]
+
+    customer_orders = purchased_orders[
+        purchased_orders["CustomerID"] == customer_id
+    ].copy()
+
+    if customer_details.empty:
+        st.warning("Customer Not Found")
+        return
+
+    customer_row = customer_details.iloc[0]
+
+    if not customer_orders.empty:
+        customer_orders["InvoiceDate"] = pd.to_datetime(customer_orders["InvoiceDate"])
+
+        customer_orders["Order_Value"] = (
+            customer_orders["Quantity"] * customer_orders["UnitPrice"]
+        )
+
+        last_purchase_date = customer_orders["InvoiceDate"].max()
+        last_purchase_date = format_invoice_date(last_purchase_date)
+
+        total_orders = customer_orders["InvoiceNo"].nunique()
+        total_spent = customer_orders["Order_Value"].sum()
+    else:
+        last_purchase_date = "No completed purchase found"
+        total_orders = 0
+        total_spent = 0
+
+    st.success("Customer Found!")
+
+    col1, col2 = st.columns(2)
+    col3, col4 = st.columns(2)
+
+    col1.metric("Customer Status", customer_row["Customer_Status"])
+    col2.metric("Recency", f"{customer_row['Recency']} days ago")
+    col3.metric("Total Orders", int(total_orders))
+    col4.metric("Total Spent", f"€{total_spent:,.2f}")
+
+    centered_text("Customer Details:")
+
+    display_df = pd.DataFrame({
+        "Metric": [
+            "Customer ID",
+            "Customer Status",
+            "Frequency",
+            "Recency",
+            "Total Quantity",
+            "Average Order Value",
+            "Monetary Value"
+        ],
+        "Value": [
+            customer_row["CustomerID"],
+            customer_row["Customer_Status"],
+            customer_row["Frequency"],
+            f"{customer_row['Recency']} days ago",
+            customer_row["TotalQuantity"],
+            f"€{customer_row['AverageOrderValue']:,.2f}",
+            f"€{customer_row['MonetaryValue']:,.2f}"
+        ]
+    })
+
+    st.dataframe(
+        display_df,
+        use_container_width=True,
+        hide_index=True
+    )
+
 def search_customer_order():
     centered_title('Invoice Lookup')
 
+    st.divider()
+
     purchased_orders, cancelled_orders = load_order_data()
 
-    left, middle, right = st.columns([1, 2, 1])
+    customer_status_data = load_customer_status_data()
 
-    with middle:
+    left, middle_left, center,middle_right, right = st.columns([0.5, 2, 1 ,2,  0.5])
+
+    with middle_left:
+        st.subheader("CustomerID")
+        customer_id = st.text_input("Search Customer ID").strip()
+
+        if customer_id:
+            show_customer_mini_dashboard(
+                customer_id,
+                customer_status_data,
+                purchased_orders
+            )
+
+    with middle_right:
+        st.subheader('Invoice Lookup')
         order_type = st.selectbox("Select Order Type", ["Purchased Orders", "Cancelled Orders"])
 
     if order_type == "Purchased Orders":
-        data = purchased_orders
+        data = purchased_orders.copy()
     else:
-        data = cancelled_orders
+        data = cancelled_orders.copy()
 
     data['InvoiceNo'] = data['InvoiceNo'].astype(str).str.strip().str.upper()
 
-    with middle:
+    with middle_right:
         invoice_no = st.text_input('What is your Invoice Number?').strip().upper()
 
-    with middle:
+    with middle_right:
         if invoice_no:
             matching_code = data[data['InvoiceNo'] == invoice_no]
 
@@ -250,7 +354,7 @@ def search_customer_order():
 
                     left, middle, right = st.columns([1, 1, 1])
 
-                    with middle:
+                    with middle_right:
                         inspect_button = st.button("Inspect")
 
                         if inspect_button:
