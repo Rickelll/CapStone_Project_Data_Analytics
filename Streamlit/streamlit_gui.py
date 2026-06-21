@@ -355,6 +355,8 @@ if __name__ == '__main__':
         search_customer_order()
     elif selected == 'Sales Report':
         sales_report()
+    elif selected == 'Customer Segmentation':
+        customer_segmentation()
 
 
 
