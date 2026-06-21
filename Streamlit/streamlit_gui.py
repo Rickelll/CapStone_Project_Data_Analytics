@@ -82,17 +82,25 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-st.markdown("""
-<style>
-h1, h2, h3 {
-    text-align: center;
-}
+def centered_title(text):
+    st.markdown(
+        f"<h1 style='text-align: center;'>{text}</h1>",
+        unsafe_allow_html=True
+    )
 
-p {
-    text-align: center;
-}
-</style>
-""", unsafe_allow_html=True)
+
+def centered_subheader(text):
+    st.markdown(
+        f"<h2 style='text-align: center;'>{text}</h2>",
+        unsafe_allow_html=True
+    )
+
+
+def centered_text(text):
+    st.markdown(
+        f"<p style='text-align: center;'>{text}</p>",
+        unsafe_allow_html=True
+    )
 
 with st.sidebar:
     selected = option_menu(
@@ -205,11 +213,14 @@ def show_order_popup(selected_data, order_type):
         )
 
 def search_customer_order():
-    st.title('Invoice Lookup')
+    centered_title('Invoice Lookup')
 
     purchased_orders, cancelled_orders = load_order_data()
 
-    order_type = st.selectbox("Select Order Type", ["Purchased Orders", "Cancelled Orders"])
+    left, middle, right = st.columns([1, 2, 1])
+
+    with middle:
+        order_type = st.selectbox("Select Order Type", ["Purchased Orders", "Cancelled Orders"])
 
     if order_type == "Purchased Orders":
         data = purchased_orders
@@ -218,20 +229,22 @@ def search_customer_order():
 
     data['InvoiceNo'] = data['InvoiceNo'].astype(str).str.strip().str.upper()
 
-    invoice_no = st.text_input('What is your Invoice Number?').strip().upper()
+    with middle:
+        invoice_no = st.text_input('What is your Invoice Number?').strip().upper()
 
-    if invoice_no:
-        matching_code = data[data['InvoiceNo'] == invoice_no]
+    with middle:
+        if invoice_no:
+            matching_code = data[data['InvoiceNo'] == invoice_no]
 
-        if not matching_code.empty:
+            if not matching_code.empty:
 
-            st.success('Your Orders have been found!!!')
+                st.success('Your Orders have been found!!!')
 
-            matching_code['Order_Value'] = matching_code['Quantity'] * matching_code['UnitPrice']
+                matching_code['Order_Value'] = matching_code['Quantity'] * matching_code['UnitPrice']
 
-            st.write("Order Details: ")
+                st.write("Order Details: ")
 
-            display_df = matching_code[
+                display_df = matching_code[
                 [
                     "InvoiceNo",
                     "CustomerID",
@@ -244,81 +257,94 @@ def search_customer_order():
                 ]
             ].copy().reset_index(drop=True)
 
-            # Format date BEFORE showing the dataframe
-            display_df["InvoiceDate"] = display_df["InvoiceDate"].apply(format_invoice_date)
+                # Format date BEFORE showing the dataframe
+                display_df["InvoiceDate"] = display_df["InvoiceDate"].apply(format_invoice_date)
 
-            table_event = st.dataframe(
+                table_event = st.dataframe(
                 display_df,
                 use_container_width=True,
                 hide_index=True,
                 on_select="rerun",
                 selection_mode="single-row"
-            )
+                )
 
-            selected_row = table_event.selection.rows
+                selected_row = table_event.selection.rows
 
-            if selected_row:
-                selected_row_number = selected_row[0]
-                selected_data = display_df.iloc[selected_row_number]
+                if selected_row:
+                    selected_row_number = selected_row[0]
+                    selected_data = display_df.iloc[selected_row_number]
 
-                inspect_button = st.button("Inspect")
+                    left, middle, right = st.columns([1, 1, 1])
 
-                if inspect_button:
-                    show_order_popup(selected_data, order_type)
+                    with middle:
+                        inspect_button = st.button("Inspect")
+
+                        if inspect_button:
+                            show_order_popup(selected_data, order_type)
+                        else:
+                            st.info("Click one row in the table, then press Inspect.")
+
             else:
-                st.info("Click one row in the table, then press Inspect.")
-
-        else:
-            st.error("No Invoice number Recognized or Invoice Number Doesn't exist.")
+                st.error("No Invoice number Recognized or Invoice Number Doesn't exist.")
 
 def sales_report():
-    st.title("Sales Report")
+    centered_title("Sales Report")
 
-    st.subheader("KPI ROW 1")
+    centered_subheader("KPI ROW 1")
 
     col1, col2, col3 = st.columns(3)
 
-    with col1:
-        components.html(gross_revenue_kpi, height=220,scrolling=False)
+    left, middle, right = st.columns([1, 10, 1])
 
-    with col2:
-        components.html(net_revenue_kpi, height=220, scrolling=False)
+    with left:
+        with col1:
+            components.html(gross_revenue_kpi, height=220,scrolling=False)
 
-    with col3:
-        components.html(revenue_lost_kpi, height=220, scrolling=False)
+    with middle:
+        with col2:
+            components.html(net_revenue_kpi, height=220, scrolling=False)
+
+    with right:
+        with col3:
+            components.html(revenue_lost_kpi, height=220, scrolling=False)
 
     st.divider()
 
-    st.subheader("KPI ROW 2")
+    centered_subheader("KPI ROW 2")
 
     col4, col5, col6 = st.columns(3)
 
-    with col4:
-        components.html(revenue_growth_kpi, height=220, scrolling=False)
+    with left:
+        with col4:
+            components.html(revenue_growth_kpi, height=220, scrolling=False)
 
-    with col5:
-        components.html(average_invoices_kpi, height=220, scrolling=False)
+    with middle:
+        with col5:
+            components.html(average_invoices_kpi, height=220, scrolling=False)
 
-    with col6:
-        components.html(total_invoices_kpi, height=220, scrolling=False)
+    with right:
+        with col6:
+            components.html(total_invoices_kpi, height=220, scrolling=False)
 
     st.divider()
 
-    st.subheader("MAIN CHART")
+    centered_subheader("MAIN CHART")
 
     components.html(monthly_completed_cancelled_revenue, height=700, scrolling=False)
 
     st.divider()
 
-    st.subheader("BOTTOM ROW CHART")
+    centered_subheader("BOTTOM ROW CHART")
 
     col7, col8 = st.columns(2)
 
-    with col7:
-        components.html(top10_countries_by_completed_revenue, height=500, scrolling=False)
+    with left:
+        with col7:
+            components.html(top10_countries_by_completed_revenue, height=500, scrolling=False)
 
-    with col8:
-        components.html(top10_products_by_completed_revenue, height=500, scrolling=False)
+    with right:
+        with col8:
+            components.html(top10_products_by_completed_revenue, height=500, scrolling=False)
 
 if __name__ == '__main__':
     if selected=="Home":
