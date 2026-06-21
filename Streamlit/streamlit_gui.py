@@ -1,15 +1,39 @@
 import streamlit as st
 import pandas as pd
 from streamlit_option_menu import option_menu
+import streamlit.components.v1 as components
 from datetime import datetime as dt
 
+sales_dashboard_embed_code = '''<div class='tableauPlaceholder' id='viz1782000930954' style='position: relative'><noscript><a href='#'><img alt='Sales Performance Dahsboard ' src='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;Ca&#47;Capstone_Project_Code-Institue_backup&#47;SalesPerformanceDahsboard&#47;1_rss.png' style='border: none' /></a></noscript><object class='tableauViz'  style='display:none;'><param name='host_url' value='https%3A%2F%2Fpublic.tableau.com%2F' /> <param name='embed_code_version' value='3' /> <param name='site_root' value='' /><param name='name' value='Capstone_Project_Code-Institue_backup&#47;SalesPerformanceDahsboard' /><param name='tabs' value='no' /><param name='toolbar' value='yes' /><param name='static_image' value='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;Ca&#47;Capstone_Project_Code-Institue_backup&#47;SalesPerformanceDahsboard&#47;1.png' /> <param name='animate_transition' value='yes' /><param name='display_static_image' value='yes' /><param name='display_spinner' value='yes' /><param name='display_overlay' value='yes' /><param name='display_count' value='yes' /><param name='language' value='en-GB' /><param name='filter' value='publish=yes' /></object></div>                <script type='text/javascript'>                    var divElement = document.getElementById('viz1782000930954');                    var vizElement = divElement.getElementsByTagName('object')[0];                    if ( divElement.offsetWidth > 800 ) { vizElement.style.width='1000px';vizElement.style.height='827px';} else if ( divElement.offsetWidth > 500 ) { vizElement.style.width='1000px';vizElement.style.height='827px';} else { vizElement.style.width='100%';vizElement.style.height='1727px';}                     var scriptElement = document.createElement('script');                    scriptElement.src = 'https://public.tableau.com/javascripts/api/viz_v1.js';                    vizElement.parentNode.insertBefore(scriptElement, vizElement);                </script>'''
+
+gross_revenue_kpi = '''<div class='tableauPlaceholder' id='viz1781822430643' style='position: relative'><noscript><a href='#'><img alt='Gross Revenue KPI ' src='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;Ca&#47;Capstone_Project_Code-Institue_backup&#47;GrossRevenueKPI&#47;1_rss.png' style='border: none' /></a></noscript><object class='tableauViz'  style='display:none;'><param name='host_url' value='https%3A%2F%2Fpublic.tableau.com%2F' /> <param name='embed_code_version' value='3' /> <param name='site_root' value='' /><param name='name' value='Capstone_Project_Code-Institue_backup&#47;GrossRevenueKPI' /><param name='tabs' value='no' /><param name='toolbar' value='yes' /><param name='static_image' value='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;Ca&#47;Capstone_Project_Code-Institue_backup&#47;GrossRevenueKPI&#47;1.png' /> <param name='animate_transition' value='yes' /><param name='display_static_image' value='yes' /><param name='display_spinner' value='yes' /><param name='display_overlay' value='yes' /><param name='display_count' value='yes' /><param name='language' value='en-GB' /><param name='filter' value='publish=yes' /></object></div>                <script type='text/javascript'>                    var divElement = document.getElementById('viz1781822430643');                    var vizElement = divElement.getElementsByTagName('object')[0];                    vizElement.style.width='100%';vizElement.style.height=(divElement.offsetWidth*0.75)+'px';                    var scriptElement = document.createElement('script');                    scriptElement.src = 'https://public.tableau.com/javascripts/api/viz_v1.js';                    vizElement.parentNode.insertBefore(scriptElement, vizElement);                </script>'''
+
+net_revenue_kpi = '''<div class='tableauPlaceholder' id='viz1781822462904' style='position: relative'><noscript><a href='#'><img alt='Net Revenue KPI  ' src='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;Ca&#47;Capstone_Project_Code-Institue_backup&#47;NetRevenueKPI&#47;1_rss.png' style='border: none' /></a></noscript><object class='tableauViz'  style='display:none;'><param name='host_url' value='https%3A%2F%2Fpublic.tableau.com%2F' /> <param name='embed_code_version' value='3' /> <param name='site_root' value='' /><param name='name' value='Capstone_Project_Code-Institue_backup&#47;NetRevenueKPI' /><param name='tabs' value='no' /><param name='toolbar' value='yes' /><param name='static_image' value='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;Ca&#47;Capstone_Project_Code-Institue_backup&#47;NetRevenueKPI&#47;1.png' /> <param name='animate_transition' value='yes' /><param name='display_static_image' value='yes' /><param name='display_spinner' value='yes' /><param name='display_overlay' value='yes' /><param name='display_count' value='yes' /><param name='language' value='en-GB' /><param name='filter' value='publish=yes' /></object></div>                <script type='text/javascript'>                    var divElement = document.getElementById('viz1781822462904');                    var vizElement = divElement.getElementsByTagName('object')[0];                    vizElement.style.width='100%';vizElement.style.height=(divElement.offsetWidth*0.75)+'px';                    var scriptElement = document.createElement('script');                    scriptElement.src = 'https://public.tableau.com/javascripts/api/viz_v1.js';                    vizElement.parentNode.insertBefore(scriptElement, vizElement);                </script>'''
+
+revenue_lost_kpi = '''<div class='tableauPlaceholder' id='viz1781822485923' style='position: relative'><noscript><a href='#'><img alt='Revenue Lost KPI ' src='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;Ca&#47;Capstone_Project_Code-Institue_backup&#47;RevenueLostKPI&#47;1_rss.png' style='border: none' /></a></noscript><object class='tableauViz'  style='display:none;'><param name='host_url' value='https%3A%2F%2Fpublic.tableau.com%2F' /> <param name='embed_code_version' value='3' /> <param name='site_root' value='' /><param name='name' value='Capstone_Project_Code-Institue_backup&#47;RevenueLostKPI' /><param name='tabs' value='no' /><param name='toolbar' value='yes' /><param name='static_image' value='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;Ca&#47;Capstone_Project_Code-Institue_backup&#47;RevenueLostKPI&#47;1.png' /> <param name='animate_transition' value='yes' /><param name='display_static_image' value='yes' /><param name='display_spinner' value='yes' /><param name='display_overlay' value='yes' /><param name='display_count' value='yes' /><param name='language' value='en-GB' /><param name='filter' value='publish=yes' /></object></div>                <script type='text/javascript'>                    var divElement = document.getElementById('viz1781822485923');                    var vizElement = divElement.getElementsByTagName('object')[0];                    vizElement.style.width='100%';vizElement.style.height=(divElement.offsetWidth*0.75)+'px';                    var scriptElement = document.createElement('script');                    scriptElement.src = 'https://public.tableau.com/javascripts/api/viz_v1.js';                    vizElement.parentNode.insertBefore(scriptElement, vizElement);                </script>'''
+
+revenue_growth_kpi = '''<div class='tableauPlaceholder' id='viz1782001030848' style='position: relative'><noscript><a href='#'><img alt='Revenue Growth KPI ' src='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;Ca&#47;Capstone_Project_Code-Institue_backup&#47;RevenueGrowthKPI&#47;1_rss.png' style='border: none' /></a></noscript><object class='tableauViz'  style='display:none;'><param name='host_url' value='https%3A%2F%2Fpublic.tableau.com%2F' /> <param name='embed_code_version' value='3' /> <param name='site_root' value='' /><param name='name' value='Capstone_Project_Code-Institue_backup&#47;RevenueGrowthKPI' /><param name='tabs' value='no' /><param name='toolbar' value='yes' /><param name='static_image' value='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;Ca&#47;Capstone_Project_Code-Institue_backup&#47;RevenueGrowthKPI&#47;1.png' /> <param name='animate_transition' value='yes' /><param name='display_static_image' value='yes' /><param name='display_spinner' value='yes' /><param name='display_overlay' value='yes' /><param name='display_count' value='yes' /><param name='language' value='en-GB' /><param name='filter' value='publish=yes' /></object></div>                <script type='text/javascript'>                    var divElement = document.getElementById('viz1782001030848');                    var vizElement = divElement.getElementsByTagName('object')[0];                    vizElement.style.width='100%';vizElement.style.height=(divElement.offsetWidth*0.75)+'px';                    var scriptElement = document.createElement('script');                    scriptElement.src = 'https://public.tableau.com/javascripts/api/viz_v1.js';                    vizElement.parentNode.insertBefore(scriptElement, vizElement);                </script>'''
 
 st.sidebar.header('Customer Segmentation Analysis')
+st.set_page_config(
+    page_title="Capstone Dashboard",
+    layout="wide"
+)
+st.markdown("""
+<style>
+.block-container {
+    max-width: 100% !important;
+    width: 100% !important;
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+}
+</style>
+""", unsafe_allow_html=True)
 
 with st.sidebar:
     selected = option_menu(
         menu_title = "Menu",
-        options = ["Home","Customer Order Search","About"]
+        options = ["Home","Customer Order Search", "Sales Report","About"]
     )
 
 def load_order_data():
@@ -18,6 +42,55 @@ def load_order_data():
     cancelled_orders = pd.read_csv('cancelled_orders.csv')
 
     return purchased_orders, cancelled_orders
+
+def format_invoice_date(date):
+    date = pd.to_datetime(date)
+
+    day = date.day
+
+    if 11 <= day <= 13:
+        suffix = "th"
+    elif day % 10 == 1:
+        suffix = "st"
+    elif day % 10 == 2:
+        suffix = "nd"
+    elif day % 10 == 3:
+        suffix = "rd"
+    else:
+        suffix = "th"
+
+    return date.strftime(f"{day}{suffix} of %B %Y")
+
+def show_tableau_kpi_card(title, embed_code, height=180):
+    st.markdown(
+        f"""
+        <div style="
+            background-color: white;
+            border: 1px solid #D1D5DB;
+            border-radius: 14px;
+            padding: 12px;
+            box-shadow: 0px 2px 8px rgba(0,0,0,0.08);
+            text-align: center;
+            margin-bottom: 15px;
+        ">
+            <h4 style="
+                margin: 0 0 8px 0;
+                color: #374151;
+                font-size: 16px;
+                font-weight: 700;
+            ">
+                {title}
+            </h4>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
+    components.html(
+        embed_code,
+        height=height,
+        scrolling=False
+    )
 
 def home_page():
     st.header('Home Page')
@@ -37,6 +110,35 @@ def home_page():
 
     st.write('How well did the regression model predict order value?')
 
+
+@st.dialog("Selected Order Details")
+def show_order_popup(selected_data, order_type):
+    st.write(f"**Invoice Number:** {selected_data['InvoiceNo']}")
+    st.write(f"**Customer ID:** {selected_data['CustomerID']}")
+    st.write(f"**Invoice Date:** {selected_data['InvoiceDate']}")
+    st.write(f"**Country:** {selected_data['Country']}")
+    st.write(f"**Product:** {selected_data['Description']}")
+    st.write(f"**Quantity:** {selected_data['Quantity']}")
+    st.write(f"**Unit Price:** €{selected_data['UnitPrice']:.2f}")
+    st.write(f"**Order Value:** €{selected_data['Order_Value']:.2f}")
+
+    st.write("Order Summary: ")
+
+    if order_type == "Purchased Orders":
+        st.write(
+            f"This order was placed on {selected_data['InvoiceDate']}. "
+            f"The customer bought {abs(selected_data['Quantity'])} of "
+            f"{selected_data['Description']} at €{selected_data['UnitPrice']:.2f} per item, "
+            f"giving this order a value of €{abs(selected_data['Order_Value']):.2f}."
+        )
+
+    elif order_type == "Cancelled Orders":
+        st.write(
+            f"This cancellation was recorded on {selected_data['InvoiceDate']}. "
+            f"The customer cancelled {abs(selected_data['Quantity'])} of "
+            f"{selected_data['Description']} at €{selected_data['UnitPrice']:.2f} per item, "
+            f"meaning €{abs(selected_data['Order_Value']):.2f} was refunded or lost from revenue."
+        )
 
 def search_customer_order():
     st.title('Invoice Lookup')
@@ -79,8 +181,7 @@ def search_customer_order():
             ].copy().reset_index(drop=True)
 
             # Format date BEFORE showing the dataframe
-            display_df["InvoiceDate"] = pd.to_datetime(display_df["InvoiceDate"])
-            display_df["InvoiceDate"] = display_df["InvoiceDate"].dt.strftime("%d/%m/%Y")
+            display_df["InvoiceDate"] = display_df["InvoiceDate"].apply(format_invoice_date)
 
             table_event = st.dataframe(
                 display_df,
@@ -99,20 +200,49 @@ def search_customer_order():
                 inspect_button = st.button("Inspect")
 
                 if inspect_button:
-                    st.write(
-                        f"This order was placed on {selected_data['InvoiceDate']}. \n"
-                        f"The customer bought {selected_data['Quantity']} of \n"
-                        f"{selected_data['Description']} at €{selected_data['UnitPrice']:.2f} per item, \n"
-                        f"giving this Order a value of €{selected_data['Order_Value']:.2f}."
-                    )
+                    show_order_popup(selected_data, order_type)
             else:
                 st.info("Click one row in the table, then press Inspect.")
+
+        else:
+            st.error("No Invoice number Recognized or Invoice Number Doesn't exist.")
+
+def sales_report():
+    st.title("Sales Report")
+
+    st.subheader("KPI ROW 1")
+
+    col1, col2, col3 = st.columns(3)
+
+    with col1:
+        components.html(gross_revenue_kpi, height=220,scrolling=False)
+
+    with col2:
+        components.html(net_revenue_kpi, height=220, scrolling=False)
+
+    with col3:
+        components.html(revenue_lost_kpi, height=220, scrolling=False)
+
+    st.divider()
+
+
+
+    st.subheader("Full Tableau Sales Dashboard")
+
+    components.html(
+        sales_dashboard_embed_code,
+        height=1100,
+        width=1600,
+        scrolling=True
+    )
 
 if __name__ == '__main__':
     if selected=="Home":
         home_page()
     elif selected=="Customer Order Search":
         search_customer_order()
+    elif selected == 'Sales Report':
+        sales_report()
 
 
 
