@@ -1,9 +1,15 @@
 import streamlit as st
 import pandas as pd
-from sklearn.metrics import mean_absolute_error
 from streamlit_option_menu import option_menu
 import streamlit.components.v1 as components
-from datetime import datetime as dt
+
+st.set_page_config(
+    page_title="Capstone Dashboard",
+    layout="wide"
+)
+
+st.sidebar.header('Customer Segmentation Analysis')
+
 
 sales_dashboard_embed_code = '''<div class='tableauPlaceholder' id='viz1782000930954' style='position: relative'><noscript><a href='#'><img alt='Sales Performance Dahsboard ' src='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;Ca&#47;Capstone_Project_Code-Institue_backup&#47;SalesPerformanceDahsboard&#47;1_rss.png' style='border: none' /></a></noscript><object class='tableauViz'  style='display:none;'><param name='host_url' value='https%3A%2F%2Fpublic.tableau.com%2F' /> <param name='embed_code_version' value='3' /> <param name='site_root' value='' /><param name='name' value='Capstone_Project_Code-Institue_backup&#47;SalesPerformanceDahsboard' /><param name='tabs' value='no' /><param name='toolbar' value='yes' /><param name='static_image' value='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;Ca&#47;Capstone_Project_Code-Institue_backup&#47;SalesPerformanceDahsboard&#47;1.png' /> <param name='animate_transition' value='yes' /><param name='display_static_image' value='yes' /><param name='display_spinner' value='yes' /><param name='display_overlay' value='yes' /><param name='display_count' value='yes' /><param name='language' value='en-GB' /><param name='filter' value='publish=yes' /></object></div>                <script type='text/javascript'>                    var divElement = document.getElementById('viz1782000930954');                    var vizElement = divElement.getElementsByTagName('object')[0];                    if ( divElement.offsetWidth > 800 ) { vizElement.style.width='1000px';vizElement.style.height='827px';} else if ( divElement.offsetWidth > 500 ) { vizElement.style.width='1000px';vizElement.style.height='827px';} else { vizElement.style.width='100%';vizElement.style.height='1727px';}                     var scriptElement = document.createElement('script');                    scriptElement.src = 'https://public.tableau.com/javascripts/api/viz_v1.js';                    vizElement.parentNode.insertBefore(scriptElement, vizElement);                </script>'''
 
@@ -45,11 +51,7 @@ rmse_kpi = '''<div class='tableauPlaceholder' id='viz1782071048379' style='posit
 
 regression_model_prediction = '''<div class='tableauPlaceholder' id='viz1782071435070' style='position: relative'><noscript><a href='#'><img alt='How Well Did the Regression Model Predict Order Value? ' src='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;Ca&#47;Capstone_Project_Code-Institue_backup&#47;Regression-ActualvsPredicted&#47;1_rss.png' style='border: none' /></a></noscript><object class='tableauViz'  style='display:none;'><param name='host_url' value='https%3A%2F%2Fpublic.tableau.com%2F' /> <param name='embed_code_version' value='3' /> <param name='site_root' value='' /><param name='name' value='Capstone_Project_Code-Institue_backup&#47;Regression-ActualvsPredicted' /><param name='tabs' value='no' /><param name='toolbar' value='yes' /><param name='static_image' value='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;Ca&#47;Capstone_Project_Code-Institue_backup&#47;Regression-ActualvsPredicted&#47;1.png' /> <param name='animate_transition' value='yes' /><param name='display_static_image' value='yes' /><param name='display_spinner' value='yes' /><param name='display_overlay' value='yes' /><param name='display_count' value='yes' /><param name='language' value='en-GB' /><param name='filter' value='publish=yes' /></object></div>                <script type='text/javascript'>                    var divElement = document.getElementById('viz1782071435070');                    var vizElement = divElement.getElementsByTagName('object')[0];                    vizElement.style.width='100%';vizElement.style.height=(divElement.offsetWidth*0.75)+'px';                    var scriptElement = document.createElement('script');                    scriptElement.src = 'https://public.tableau.com/javascripts/api/viz_v1.js';                    vizElement.parentNode.insertBefore(scriptElement, vizElement);                </script>'''
 
-st.sidebar.header('Customer Segmentation Analysis')
-st.set_page_config(
-    page_title="Capstone Dashboard",
-    layout="wide"
-)
+
 st.markdown("""
 <style>
 .block-container {
@@ -167,6 +169,9 @@ def home_page():
 
     st.write('How well did the regression model predict order value?')
 
+def about_page():
+    centered_title("About This Project")
+    centered_text("This project was built using Python, Streamlit, Tableau, and machine learning to analyse customer sales data.")
 
 @st.dialog("Selected Order Details")
 def show_order_popup(selected_data, order_type):
@@ -321,17 +326,17 @@ def search_customer_order():
 
     with middle_right:
         if invoice_no:
-            matching_code = data[data['InvoiceNo'] == invoice_no]
+            invoice_match = data[data['InvoiceNo'] == invoice_no].copy()
 
-            if not matching_code.empty:
+            if not invoice_match.empty:
 
                 st.success('Your Orders have been found!!!')
 
-                matching_code['Order_Value'] = matching_code['Quantity'] * matching_code['UnitPrice']
+                invoice_match['Order_Value'] = invoice_match['Quantity'] * invoice_match['UnitPrice']
 
                 st.write("Order Details: ")
 
-                display_df = matching_code[
+                display_df = invoice_match[
                 [
                     "InvoiceNo",
                     "CustomerID",
@@ -424,6 +429,7 @@ def sales_report():
 
     with col8:
         components.html(top10_products_by_completed_revenue, height=500, scrolling=False)
+
 
 def customer_segmentation():
     centered_title("Customer Segmentation")
@@ -554,7 +560,8 @@ if __name__ == '__main__':
         customer_segmentation()
     elif selected == 'Regression Model':
         regression_model()
-
+    elif selected == 'About':
+        about_page()
 
 
 
