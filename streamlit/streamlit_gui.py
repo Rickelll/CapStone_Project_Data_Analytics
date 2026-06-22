@@ -169,9 +169,21 @@ def home_page():
 
     st.write('How well did the regression model predict order value?')
 
+    st.divider()
+
+    insight_box(
+        "Project Summary",
+        "This Streamlit app brings together the main outputs of the project: sales performance, cancellation impact, customer segmentation, "
+        "and regression model results. Tableau is used for polished dashboard visuals, while Streamlit adds interactive search and explanation."
+    )
+
 def about_page():
     centered_title("About This Project")
     centered_text("This project was built using Python, Streamlit, Tableau, and machine learning to analyse customer sales data.")
+
+def insight_box(title, text):
+    st.markdown(f"### {title}")
+    st.info(text)
 
 @st.dialog("Selected Order Details")
 def show_order_popup(selected_data, order_type):
@@ -378,6 +390,14 @@ def search_customer_order():
 
             else:
                 st.error("No Invoice number Recognized or Invoice Number Doesn't exist.")
+    st.divider()
+
+    insight_box(
+        "Invoice Lookup Insight",
+        "This page allows individual customer orders to be inspected in detail. "
+        "The customer search gives a quick summary of customer value and status, while the invoice lookup connects high-level sales results "
+        "back to the original transaction rows."
+    )
 
 def sales_report():
     centered_title("Sales Report")
@@ -430,6 +450,14 @@ def sales_report():
     with col8:
         components.html(top10_products_by_completed_revenue, height=500, scrolling=False)
 
+    st.divider()
+
+    insight_box(
+        "Sales Insight",
+        "The sales dashboard shows that completed revenue increased strongly over the period. "
+        "Although cancellations caused revenue loss, they did not stop the overall upward sales trend. "
+        "The top country and product charts also show where most completed revenue came from."
+    )
 
 def customer_segmentation():
     centered_title("Customer Segmentation")
@@ -518,6 +546,15 @@ def customer_segmentation():
         hide_index=True
     )
 
+    st.divider()
+
+    insight_box(
+        "Customer Segmentation Insight",
+        "Customers were grouped based on frequency, recency, average order value, and monetary value. "
+        "This helps identify which customer groups are most valuable, which customers are loyal, "
+        "and which customers may need attention because they have not purchased recently."
+    )
+
 def regression_model():
     centered_title("Regression Model")
 
@@ -544,8 +581,14 @@ def regression_model():
 
     centered_subheader('Insight')
 
-    centered_text('The model predicts smaller orders better but struggles with high-value orders.')
-    centered_text('The R² score shows limited predictive power, but it still captures some customer behaviour patterns.')
+    st.divider()
+
+    insight_box(
+        "Regression Model Insight",
+        "The regression model shows limited predictive power, but it still gives useful insight into customer behaviour. "
+        "The model predicts smaller order values better, while larger high-value orders are harder to predict accurately. "
+        "This suggests that more detailed features, such as product categories or seasonal trends, could improve future predictions."
+    )
 
 
 
