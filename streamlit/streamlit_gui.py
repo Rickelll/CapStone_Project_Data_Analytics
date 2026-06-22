@@ -170,6 +170,12 @@ def section_header(text):
     )
 
 
+def clean_tableau_embed(embed_code):
+    embed_code = embed_code.replace("<param name='tabs' value='yes' />", "<param name='tabs' value='no' />")
+    embed_code = embed_code.replace("<param name='toolbar' value='yes' />", "<param name='toolbar' value='no' />")
+    embed_code = embed_code.replace("<param name='display_count' value='yes' />", "<param name='display_count' value='no' />")
+    return embed_code
+
 def normal_centered_text(text):
     st.markdown(
         f"<p class='center-text'>{text}</p>",
