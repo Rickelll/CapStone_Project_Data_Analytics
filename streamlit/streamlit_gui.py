@@ -8,6 +8,98 @@ st.set_page_config(
     layout="wide"
 )
 
+st.markdown("""
+<style>
+/* App background */
+.stApp {
+    background-color: #F4F6F8;
+}
+
+/* Main page width and spacing */
+.block-container {
+    max-width: 95% !important;
+    padding-top: 2rem !important;
+    padding-left: 2rem !important;
+    padding-right: 2rem !important;
+}
+
+/* Page header */
+.page-header {
+    background: linear-gradient(135deg, #1F2937, #374151);
+    padding: 35px 25px;
+    border-radius: 18px;
+    margin-bottom: 25px;
+    text-align: center;
+    color: white;
+    box-shadow: 0px 4px 12px rgba(0,0,0,0.12);
+}
+
+.page-header h1 {
+    font-size: 42px;
+    font-weight: 800;
+    margin-bottom: 8px;
+}
+
+.page-header p {
+    font-size: 18px;
+    color: #E5E7EB;
+    margin: 0;
+}
+
+/* Section headings */
+.section-heading {
+    text-align: center;
+    color: #1F2937;
+    font-size: 28px;
+    font-weight: 750;
+    margin-top: 30px;
+    margin-bottom: 18px;
+}
+
+/* Small explanation text */
+.center-text {
+    text-align: center;
+    color: #4B5563;
+    font-size: 17px;
+    line-height: 1.6;
+}
+
+/* Tableau/chart card wrapper */
+.chart-title {
+    text-align: center;
+    color: #111827;
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+/* Buttons */
+.stButton > button {
+    background-color: #2563EB;
+    color: white;
+    border-radius: 10px;
+    border: none;
+    padding: 0.6rem 1.2rem;
+    font-weight: 700;
+}
+
+.stButton > button:hover {
+    background-color: #1D4ED8;
+    color: white;
+}
+
+/* Alerts */
+div[data-testid="stAlert"] {
+    border-radius: 12px;
+}
+
+/* Dataframe spacing */
+div[data-testid="stDataFrame"] {
+    border-radius: 12px;
+}
+</style>
+""", unsafe_allow_html=True)
+
 st.sidebar.header('Customer Segmentation Analysis')
 
 
@@ -52,17 +144,6 @@ rmse_kpi = '''<div class='tableauPlaceholder' id='viz1782071048379' style='posit
 regression_model_prediction = '''<div class='tableauPlaceholder' id='viz1782071435070' style='position: relative'><noscript><a href='#'><img alt='How Well Did the Regression Model Predict Order Value? ' src='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;Ca&#47;Capstone_Project_Code-Institue_backup&#47;Regression-ActualvsPredicted&#47;1_rss.png' style='border: none' /></a></noscript><object class='tableauViz'  style='display:none;'><param name='host_url' value='https%3A%2F%2Fpublic.tableau.com%2F' /> <param name='embed_code_version' value='3' /> <param name='site_root' value='' /><param name='name' value='Capstone_Project_Code-Institue_backup&#47;Regression-ActualvsPredicted' /><param name='tabs' value='no' /><param name='toolbar' value='yes' /><param name='static_image' value='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;Ca&#47;Capstone_Project_Code-Institue_backup&#47;Regression-ActualvsPredicted&#47;1.png' /> <param name='animate_transition' value='yes' /><param name='display_static_image' value='yes' /><param name='display_spinner' value='yes' /><param name='display_overlay' value='yes' /><param name='display_count' value='yes' /><param name='language' value='en-GB' /><param name='filter' value='publish=yes' /></object></div>                <script type='text/javascript'>                    var divElement = document.getElementById('viz1782071435070');                    var vizElement = divElement.getElementsByTagName('object')[0];                    vizElement.style.width='100%';vizElement.style.height=(divElement.offsetWidth*0.75)+'px';                    var scriptElement = document.createElement('script');                    scriptElement.src = 'https://public.tableau.com/javascripts/api/viz_v1.js';                    vizElement.parentNode.insertBefore(scriptElement, vizElement);                </script>'''
 
 
-st.markdown("""
-<style>
-.block-container {
-    max-width: 100% !important;
-    width: 100% !important;
-    padding-left: 1rem !important;
-    padding-right: 1rem !important;
-}
-</style>
-""", unsafe_allow_html=True)
-
 def centered_title(text):
     st.markdown(
         f"<h1 style='text-align: center;'>{text}</h1>",
@@ -70,12 +151,43 @@ def centered_title(text):
     )
 
 
-def centered_subheader(text):
+def page_header(title, subtitle=""):
     st.markdown(
-        f"<h2 style='text-align: center;'>{text}</h2>",
+        f"""
+        <div class="page-header">
+            <h1>{title}</h1>
+            <p>{subtitle}</p>
+        </div>
+        """,
         unsafe_allow_html=True
     )
 
+
+def section_header(text):
+    st.markdown(
+        f"<h2 class='section-heading'>{text}</h2>",
+        unsafe_allow_html=True
+    )
+
+
+def normal_centered_text(text):
+    st.markdown(
+        f"<p class='center-text'>{text}</p>",
+        unsafe_allow_html=True
+    )
+
+def tableau_card(title, embed_code, height=250, scrolling=False):
+    st.markdown(
+        f"<div class='chart-title'>{title}</div>",
+        unsafe_allow_html=True
+    )
+
+    with st.container(border=True):
+        components.html(
+            embed_code,
+            height=height,
+            scrolling=scrolling
+        )
 
 def centered_text(text):
     st.markdown(
@@ -400,55 +512,58 @@ def search_customer_order():
     )
 
 def sales_report():
-    centered_title("Sales Report")
+    page_header(
+        "Sales Report",
+        "Main business performance from completed sales and cancellations."
+    )
 
-    centered_subheader("KPI ROW 1")
+    section_header("Key Sales Metrics")
 
     col1, col2, col3 = st.columns(3)
 
     left, middle, right = st.columns([1, 10, 1])
 
     with col1:
-        components.html(gross_revenue_kpi, height=220,scrolling=False)
+        tableau_card("Gross Revenue", gross_revenue_kpi, height=220)
 
     with col2:
-        components.html(net_revenue_kpi, height=220, scrolling=False)
+        tableau_card('Net Revenue', net_revenue_kpi, height=220, scrolling=False)
 
     with col3:
-        components.html(revenue_lost_kpi, height=220, scrolling=False)
+        tableau_card('Revenue Lost', revenue_lost_kpi, height=220, scrolling=False)
 
     st.divider()
 
-    centered_subheader("KPI ROW 2")
+    section_header("Key Sales Metrics")
 
     col4, col5, col6 = st.columns(3)
 
     with col4:
-        components.html(revenue_growth_kpi, height=220, scrolling=False)
+        tableau_card('Revenue Growth', revenue_growth_kpi, height=220, scrolling=False)
 
     with col5:
-        components.html(average_invoices_kpi, height=220, scrolling=False)
+        tableau_card('Average Invoices', average_invoices_kpi, height=220, scrolling=False)
 
     with col6:
-        components.html(total_invoices_kpi, height=220, scrolling=False)
+        tableau_card('Total Invoices', total_invoices_kpi, height=220, scrolling=False)
 
     st.divider()
 
-    centered_subheader("MAIN CHART")
+    section_header("MAIN CHART")
 
-    components.html(monthly_completed_cancelled_revenue, height=700, scrolling=False)
+    tableau_card('Monthly Revenue', monthly_completed_cancelled_revenue, height=700, scrolling=False)
 
     st.divider()
 
-    centered_subheader("BOTTOM ROW CHART")
+    section_header("BOTTOM ROW CHART")
 
     col7, col8 = st.columns(2)
 
     with col7:
-        components.html(top10_countries_by_completed_revenue, height=500, scrolling=False)
+        tableau_card('Top 10 Countries by Completed Revenue', top10_countries_by_completed_revenue, height=500, scrolling=False)
 
     with col8:
-        components.html(top10_products_by_completed_revenue, height=500, scrolling=False)
+        tableau_card('Top 10 Products by Completed Revenue', top10_products_by_completed_revenue, height=500, scrolling=False)
 
     st.divider()
 
@@ -464,44 +579,44 @@ def customer_segmentation():
 
     st.divider()
 
-    centered_subheader("Customer Grouping Explanation")
+    section_header("Customer Grouping Explanation")
     centered_text(
         "Customers were grouped using frequency, recency, average order value, and monetary value."
     )
 
     st.divider()
 
-    centered_subheader("KPI Overview")
+    section_header("KPI Overview")
 
     col1, col2, col3, col4 = st.columns(4, gap="large")
 
     with col1:
-        components.html(total_customers_kpi, height=220, scrolling=False)
+        tableau_card('Total Customers', total_customers_kpi, height=220, scrolling=False)
 
     with col2:
-        components.html(vip_customers_kpi, height=220, scrolling=False)
+        tableau_card('Vip Customers', vip_customers_kpi, height=220, scrolling=False)
 
     with col3:
-        components.html(loyal_customers_kpi, height=220, scrolling=False)
+        tableau_card('Loyal Customers',loyal_customers_kpi, height=220, scrolling=False)
 
     with col4:
-        components.html(at_risk_customers_kpi, height=220, scrolling=False)
+        tableau_card('Risk of Losing Customers', at_risk_customers_kpi, height=220, scrolling=False)
 
     st.divider()
 
-    centered_subheader("Customer Value Charts")
+    section_header("Customer Value Charts")
 
     col5, col6 = st.columns(2, gap="large")
 
     with col5:
-        components.html(customer_group_total_value, height=600, scrolling=False)
+        tableau_card('Customer Group Monetary Value', customer_group_total_value, height=600, scrolling=False)
 
     with col6:
-        components.html(customer_group_total_per_customer, height=600, scrolling=False)
+        tableau_card('Average Value Per Customer Group', customer_group_total_per_customer, height=600, scrolling=False)
 
     st.divider()
 
-    centered_subheader("Customer Status Filter")
+    section_header("Customer Status Filter")
 
     customer_status_data = load_customer_status_data()
 
@@ -558,28 +673,28 @@ def customer_segmentation():
 def regression_model():
     centered_title("Regression Model")
 
-    centered_subheader("KPI ROW")
+    section_header("KPI ROW")
 
     col1, col2, col3 = st.columns(3)
 
     with col1:
-        components.html(mean_absolute_error_kpi, height=220, scrolling=False)
+        tableau_card('Mean Absolute Error', mean_absolute_error_kpi, height=220, scrolling=False)
 
     with col2:
-        components.html(rmse_kpi, height=220, scrolling=False)
+        tableau_card('RMSE' , rmse_kpi, height=220, scrolling=False)
 
     with col3:
-        components.html(r2_score_kpi, height=220, scrolling=False)
+        tableau_card('R2 Score',r2_score_kpi, height=220, scrolling=False)
 
     st.divider()
 
-    centered_subheader('Actual Order Value vs Predicted Order Value')
+    section_header('Actual Order Value vs Predicted Order Value')
 
-    components.html(regression_model_prediction, height=700, scrolling=False)
+    tableau_card('Regression Model', regression_model_prediction, height=700, scrolling=False)
 
     st.divider()
 
-    centered_subheader('Insight')
+    section_header('Insight')
 
     st.divider()
 
