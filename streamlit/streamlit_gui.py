@@ -675,7 +675,8 @@ def show_customer_mini_dashboard(customer_id, customer_status_data, purchased_or
     )
 
 def search_customer_order():
-    centered_title('Invoice Lookup')
+    page_header('Invoice Lookup',"Search CustomerID for customer history and "
+                                 "Search Invoice Number for Customer Orders")
 
     st.divider()
 
@@ -837,14 +838,7 @@ def sales_report():
     )
 
 def customer_segmentation():
-    centered_title("Customer Segmentation")
-
-    st.divider()
-
-    section_header("Customer Grouping Explanation")
-    centered_text(
-        "Customers were grouped using frequency, recency, average order value, and monetary value."
-    )
+    page_header("Customer Segmentation","Customers were grouped using frequency, recency, average order value, and monetary value.")
 
     st.divider()
 
@@ -933,7 +927,7 @@ def customer_segmentation():
     )
 
 def regression_model():
-    centered_title("Regression Model")
+    page_header("Regression Model")
 
     section_header("KPI ROW")
 
