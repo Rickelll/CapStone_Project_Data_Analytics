@@ -19,4 +19,15 @@ This project was built using:
 * Jupyter Notebook
 * AI assistant support for debugging, planning, and explanation
 
+# Main Business Questions 
 
+The project was designed around the following business questions:
+
+* How much revenue did the business generate?
+* How much revenue was lost through cancellations?
+* Are sales increasing or decreasing over time?
+* Which countries generate the most completed revenue?
+* Which products generate the most completed revenue?
+* Which customer groups are most valuable?
+* Can previous customer behaviour help predict future order value?
+* How can customer and invoice-level data be explored in an interactive dashboard?
