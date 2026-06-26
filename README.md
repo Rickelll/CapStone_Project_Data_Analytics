@@ -65,3 +65,56 @@ The project was split into different Python files to keep the work organised.
 * tableau_data/ stores the CSV files used for Tableau charts and KPIs.
 
 I used this structure because the project became easier to manage when each file had a clear purpose.
+
+# Data Cleaning and Processing
+
+The first major part of the project was cleaning the dataset.
+
+At the start, the data looked like a normal sales dataset, but after checking it properly, I found several issues that could affect the analysis. These included missing customer IDs, cancelled invoices, negative quantities, repeated invoice rows, and large purchases that were later reversed by cancellations.
+
+The main cleaning steps were:
+
+* Loaded the original customer_segmentation_data.csv file.
+* Used the correct CSV encoding because the file did not load correctly with the default encoding.
+* Filled missing product descriptions with "Unknown".
+* Removed rows with missing CustomerID values.
+* Converted CustomerID into a cleaner integer format.
+* Separated normal purchase orders from cancelled orders.
+* Treated invoices beginning with "C" as cancelled orders.
+* Removed invalid purchase rows where Quantity or UnitPrice were not positive.
+* Created row-level revenue using Quantity * UnitPrice.
+* Saved cleaned datasets to CSV files for later use.
+
+This stage was important because the analysis depended on reliable customer IDs, valid purchases, and correctly separated cancellations.
+
+# Handling Purchases, Cancellations and Completed Orders
+
+One of the most important parts of the project was separating completed purchases from cancelled or reversed transactions.
+
+Cancelled orders were identified by invoice numbers that started with "C". These were stored separately in cancelled_orders.csv.
+
+At first, I calculated sales from the purchase data, but I noticed that some very large purchase invoices had matching cancellation invoices. This meant that some purchases looked like successful sales, but were later reversed.
+
+If these were left in the completed sales data, they would make the business look like it earned more revenue than it actually did.
+
+To fix this, I created a completed purchases dataset.
+
+The matching process compared purchases and cancellations using:
+* CustomerID
+* invoice value
+* rounded invoice value
+* purchase date
+* cancellation date
+* a match number to avoid duplicate many-to-many matches
+
+Only cancellations that happened after the original purchase were treated as possible reversals.
+
+The reversed purchases were saved separately in:
+
+* matched_reversed_invoices.csv
+
+The final completed purchase data was saved in:
+
+* completed_purchase_orders.csv
+
+This made the revenue analysis more realistic because fully reversed purchases were no longer counted as successful completed sales.
