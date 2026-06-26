@@ -56,3 +56,12 @@ Because of this, the raw data needed to be cleaned and reshaped before it could 
 # Project Structure
 
 The project was split into different Python files to keep the work organised.
+
+* main.py handles the main cleaning process, separates purchases and cancellations, creates completed purchases, creates customer-level data, and creates the regression-ready dataset.
+* sales_report.py creates the main sales metrics, monthly revenue data, cancellation analysis, country revenue, product revenue, and Tableau-ready CSV files.
+* k-means_clustering.py creates customer status groups and compares them with K-Means clustering.
+* regression_model.py trains and evaluates a regression model to predict order value.
+* streamlit_gui.py builds the interactive Streamlit dashboard and embeds Tableau visualisations.
+* tableau_data/ stores the CSV files used for Tableau charts and KPIs.
+
+I used this structure because the project became easier to manage when each file had a clear purpose.
