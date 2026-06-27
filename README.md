@@ -118,3 +118,22 @@ The final completed purchase data was saved in:
 * completed_purchase_orders.csv
 
 This made the revenue analysis more realistic because fully reversed purchases were no longer counted as successful completed sales.
+
+# Why These Values Were Analysed
+
+I chose the main values in the project because each one answered a different business question.
+
+Revenue was analysed because it shows how much money the business generated.
+
+Cancellation value was analysed because cancellations reduce real business performance. Gross revenue can look strong, but if large invoices are cancelled, the actual completed revenue is lower.
+
+Average completed invoice value was analysed because it shows the typical value of a successful order. This is useful because total revenue can be affected by very large invoices.
+
+Monthly revenue was analysed to see whether sales were increasing or decreasing over time.
+
+Country revenue was analysed to understand which countries were producing the most completed sales.
+
+Product revenue was analysed to identify which products were contributing most to the business.
+
+Customer status was analysed because total sales figures do not explain customer behaviour on their own. A business needs to know which customers are valuable, loyal, new, inactive, or at risk.
+
