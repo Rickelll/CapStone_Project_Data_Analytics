@@ -137,3 +137,36 @@ Product revenue was analysed to identify which products were contributing most t
 
 Customer status was analysed because total sales figures do not explain customer behaviour on their own. A business needs to know which customers are valuable, loyal, new, inactive, or at risk.
 
+# Feature Engineering
+
+The raw dataset did not contain all the values needed for analysis, so I created new features.
+
+The first feature was row-level revenue:
+
+RowValue = Quantity * UnitPrice
+
+This was used to calculate invoice values, product revenue, country revenue, monthly revenue, and cancellation value.
+
+I also created customer-level features:
+
+Frequency - how many unique invoices a customer had
+Recency - how many days since the customer last purchased
+MonetaryValue - total amount spent by the customer
+AverageOrderValue - average value of the customer's orders
+TotalQuantity - total number of items bought by the customer
+
+For invoice-level analysis, I also created running customer features:
+
+OrderCount
+MonetaryValue
+AverageOrderValue
+
+For the regression model, I created previous behaviour features:
+
+PreviousMonetaryValue
+PreviousAverageOrderValue
+PreviousOrderCount
+PreviousOrderValue
+DaysSincePreviousOrder
+
+These previous behaviour features were important because the model should only use information that would be known before the current order.
