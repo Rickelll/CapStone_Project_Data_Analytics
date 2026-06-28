@@ -318,3 +318,72 @@ The clustering output was checked using:
 K-Means was not treated as the final source of truth for customer status. It was used as a comparison to see whether the natural clusters in the data matched the rule-based customer groups.
 
 This was useful because business-defined customer groups and mathematical clusters do not always match perfectly.
+
+# Regression Model
+
+A regression model was created to test whether previous customer behaviour could help predict future order value.
+
+The target value was:
+
+OrderValue
+
+The final model used a RandomForestRegressor.
+
+The model used these features:
+
+* PreviousAverageOrderValue
+* PreviousMonetaryValue
+* PreviousOrderCount
+* PreviousOrderValue
+* DaysSincePreviousOrder
+* Country
+
+The model was trained using an 80/20 train-test split.
+
+I used previous customer behaviour because it would not be realistic to use information from the current order to predict the current order value.
+
+# Regression Data Leakage Fix
+
+One of the biggest bugs in the project happened during regression modelling.
+
+An early regression model produced a very high R² score of around 0.97. At first, this looked like a very strong result.
+
+After checking the data more carefully, I realised this result was misleading because the regression data still contained product-level duplicate rows from the same invoice.
+
+Since one invoice could have multiple product rows, several rows shared the same InvoiceNo and OrderValue. This meant the model was probably learning repeated invoice information instead of properly predicting order value.
+
+This was a data leakage issue.
+
+To fix it, I rebuilt the regression dataset so that each invoice appeared only once.
+
+This made the final model score lower, but the result was more honest and reliable.
+
+This was an important learning point because a good model is not just the one with the highest score. It needs to be a result that can be trusted.
+
+# Final Regression Results
+
+The final Random Forest regression model produced these results:
+
+* Mean Absolute Error: 335.70
+* Mean Squared Error: 1,328,666.84
+* Root Mean Squared Error: 1,152.68
+* R² Score: 0.24
+
+The final model had limited predictive power.
+
+It predicted smaller order values better than larger high-value orders. Many expensive orders were under-predicted.
+
+This suggests that previous customer behaviour alone is not enough to accurately predict future order value.
+
+Even though the model was limited, it was still useful because it showed what the available data could and could not predict.
+
+Future model improvements could include:
+
+* product categories
+* seasonality
+* promotions or discounts
+* customer segment
+* more detailed product behaviour
+* customer location patterns
+
+![Regression Predictions vs Actual](assets/customer_groups_total_value.png)
