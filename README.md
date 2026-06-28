@@ -539,6 +539,26 @@ This project has several limitations:
 
 These limitations are important because they show that the results should be interpreted carefully.
 
+# Tableau Visualisations
+
+Tableau was used to create the main visual charts and KPI cards.
+
+The Tableau charts were embedded inside Streamlit so that the app could combine Tableau's visual design with Streamlit's interactivity.
+
+The Tableau visuals include:
+
+* revenue KPI cards
+* cancellation KPI cards
+* monthly sales trend
+* completed revenue vs cancellation loss
+* top 10 countries by completed revenue
+* top 10 products by completed revenue
+* customer segmentation KPIs
+* customer value charts
+* actual vs predicted regression chart
+
+Some Tableau Public embed formatting issues remained, such as small toolbar or spacing limitations. These were accepted as visual limitations because the charts still communicated the analysis clearly.
+
 # Bugs, Challenges and Fixes
 
 Several issues came up during the project.
