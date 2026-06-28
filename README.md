@@ -424,6 +424,60 @@ This project has several limitations:
 
 These limitations are important because they show that the results should be interpreted carefully.
 
+# Bugs, Challenges and Fixes
+
+Several issues came up during the project.
+
+# CSV Encoding Error
+
+The original dataset did not load correctly with the default CSV settings.
+
+This was fixed by loading the file using the correct encoding.
+
+# Missing Customer IDs
+
+Some rows had missing CustomerID values.
+
+These rows were removed because the project needed reliable customer identifiers for customer segmentation, frequency, recency, monetary value, and regression features.
+
+Keeping these rows would have made the customer analysis less reliable.
+
+# Cancelled Orders
+
+Cancelled orders had invoice numbers beginning with "C".
+
+These orders had to be separated from normal purchases because they represented revenue loss rather than completed sales.
+
+# Reversed Purchases
+
+Some large purchase invoices were later matched by cancellation invoices.
+
+At first, these purchases made revenue look higher. After checking them more carefully, they appeared to be reversed transactions.
+
+To fix this, the project matched purchases and cancellations and removed fully reversed purchases from the completed purchase dataset.
+
+This made the final sales figures more realistic.
+
+# Product-Level Duplicate Rows
+
+The raw dataset stored invoices at product-row level.
+
+This meant one invoice could appear many times if it contained multiple products.
+
+This caused problems for regression because repeated invoice rows could make the model look more accurate than it really was.
+
+The regression dataset was rebuilt so that each invoice appeared only once.
+
+# Regression Data Leakage
+
+An early regression model produced a very high R² score.
+
+After investigation, this was rejected because the model was likely benefiting from duplicated invoice rows.
+
+The final model had a lower score, but it was more reliable.
+
+This was one of the most important learning points in the project.
+
 # Credits
 
 Dataset source: Online retail/customer transaction dataset used for educational analysis.
