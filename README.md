@@ -539,6 +539,31 @@ This project has several limitations:
 
 These limitations are important because they show that the results should be interpreted carefully.
 
+# Streamlit Dashboard
+
+The Streamlit dashboard brings the project together into one interactive app.
+
+The app includes:
+
+* Home
+* Customer Order Search
+* Sales Report
+* Customer Segmentation
+* Regression Model
+* About
+
+The Home page introduces the project and explains the main business questions.
+
+The Customer Order Search page allows users to search by customer ID and invoice number. It shows customer status, recency, total orders, total spent, invoice rows, and a popup order summary.
+
+The Sales Report page shows the main revenue results, cancellation impact, monthly sales trends, top countries, and top products.
+
+The Customer Segmentation page shows customer groups, customer value charts, and a filterable customer table.
+
+The Regression Model page shows model metrics and an actual vs predicted order value chart.
+
+The dashboard was designed to make the analysis easier to explore instead of only showing static results.
+
 # Tableau Visualisations
 
 Tableau was used to create the main visual charts and KPI cards.
