@@ -388,6 +388,42 @@ Future model improvements could include:
 
 ![Regression Predictions vs Actual](assets/customer_groups_total_value.png)
 
+# Ethics, Privacy and GDPR
+
+The dataset uses anonymous customer IDs instead of customer names, phone numbers, emails, or addresses.
+
+Even though the dataset does not contain direct personal information, customer transaction data can still be sensitive because it shows purchasing behaviour.
+
+Ethical considerations included:
+
+* treating CustomerID as an anonymous identifier
+* avoiding any attempt to identify individual customers
+* removing rows where customer-level analysis could not be done reliably
+* being careful when interpreting customer groups
+* avoiding unfair assumptions about customers based only on spending behaviour
+* presenting model results honestly
+* explaining limitations clearly
+
+If this project were used in a real business, GDPR and data governance rules would need to be followed. This would include secure data storage, controlled access, data minimisation, clear retention rules, and transparency around how customer data is used.
+
+# Limitations
+
+This project has several limitations:
+
+* The dataset covers a limited time period.
+* Some rows had missing CustomerID values and had to be removed.
+* Product descriptions were not always clean or standardised.
+* The United Kingdom dominated the dataset, which affected country comparisons.
+* The final month appeared incomplete and had to be excluded from the trend comparison.
+* The regression model had limited predictive power.
+* High-value orders were difficult for the model to predict.
+* Previous customer behaviour alone was not enough for strong prediction.
+* K-Means clusters did not perfectly match business-defined customer groups.
+* Tableau Public embeds created some visual formatting limitations.
+* The project used static CSV files rather than a live database.
+
+These limitations are important because they show that the results should be interpreted carefully.
+
 # Credits
 
 Dataset source: Online retail/customer transaction dataset used for educational analysis.
