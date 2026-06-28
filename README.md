@@ -241,3 +241,35 @@ The product analysis looked at:
 This helped show which products contributed most to successful completed sales.
 
 ![Top Products by Completed Revenue](assets/top_products_by_completed_revenue.PNG)
+
+# Customer Segmentation
+
+Customer segmentation was one of the most important parts of the project.
+
+Sales totals are useful, but they do not explain what type of customers created those sales. I wanted the project to show not only what the business earned, but also what kind of customer behaviour was behind the revenue.
+
+Customer segmentation helped group customers into easier-to-understand categories.
+
+The groups used were:
+
+* VIP
+* Loyal
+* Risk
+* New
+* Inactive
+
+These groups were based on customer behaviour such as frequency, recency, average order value, and monetary value.
+
+The reason customer status matters is that it helps a business understand how to treat different types of customers.
+
+For example:
+
+* VIP customers are valuable and should be retained.
+* Loyal customers buy often and recently.
+* Risk customers bought frequently before but have not purchased recently.
+* New customers purchased recently but do not yet have a long history.
+* Inactive customers do not currently show strong recent or frequent purchasing behaviour.
+
+This makes the dashboard more useful for business decision-making because it turns numbers into customer groups that are easier to understand.
+
+![Customer Groups](assets/customer_status_groups.PNG)
