@@ -212,3 +212,32 @@ This showed that sales increased strongly over the analysed period.
 Cancellations were also analysed by month. They caused revenue loss, but they did not stop the overall positive sales trend.
 
 ![Monthly Revenue vs Cancellation Loss](assets/monthly_revenue_vs_cancellation_loss.PNG)
+
+# Top Countries and Products
+
+I analysed country revenue to find out which countries generated the most completed sales.
+
+The country analysis looked at:
+
+* completed revenue
+* total invoices
+* total customers
+* average invoice value
+
+The United Kingdom generated most of the completed revenue. This was an important finding, but also a limitation because the country analysis was heavily dominated by one country.
+
+![Top Countries by Completed Revenue](assets/top_countries_by_completed_revenue.PNG)
+
+I also analysed product revenue to find the highest earning products.
+
+The product analysis looked at:
+
+* completed revenue
+* total quantity sold
+* total invoices
+* total customers
+* average invoice value
+
+This helped show which products contributed most to successful completed sales.
+
+![Top Products by Completed Revenue](assets/top_products_by_completed_revenue.PNG)
