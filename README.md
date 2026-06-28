@@ -272,6 +272,88 @@ For example:
 
 This makes the dashboard more useful for business decision-making because it turns numbers into customer groups that are easier to understand.
 
+# Why Customer Status Matters
+
+Customer status was included because sales totals only show part of the story. Knowing total revenue is useful, but it does not explain what type of customers are creating that revenue or how the business could respond to different customer groups.
+
+By grouping customers into statuses such as VIP, Loyal, Risk, New, and Inactive, the dashboard becomes more useful from a business point of view.
+
+Each group can support a different business action.
+
+# VIP Customers
+
+VIP customers are the highest-value customers. They buy often, buy recently, and spend strongly.
+
+These customers are important because they already bring strong value to the business. A business could use this group for retention strategies such as:
+
+* exclusive discounts
+* early access to new products
+* loyalty rewards
+* personalised thank-you offers
+* premium customer treatment
+
+The goal with VIP customers would be to keep them engaged because losing them could have a larger impact on revenue.
+
+# Risk Customers
+
+Risk customers have bought frequently in the past but have not purchased recently.
+
+This group matters because they may have been valuable before, but their recent behaviour suggests they could be drifting away.
+
+A business could use this group for re-engagement campaigns such as:
+
+* “we miss you” emails
+* limited-time discounts
+* reminders about new products
+* personalised offers based on previous purchases
+* feedback requests to understand why they stopped buying
+
+This group is important because it may be cheaper to win back previous customers than to find completely new ones.
+
+# New Customers
+
+New customers have purchased recently but do not yet have a long buying history.
+
+This group is useful because they are at the beginning of the customer relationship. A business could target them with:
+
+* welcome offers
+* reminders about new deals
+* product recommendations
+* first-time customer discounts
+* emails encouraging a second purchase
+
+The aim would be to turn new customers into repeat customers.
+
+# Inactive Customers
+
+Inactive customers do not currently show strong recent or frequent purchasing behaviour.
+
+This group can still be useful because some customers may return if they are reminded about the business. A business could target inactive customers with:
+
+* reminders about what they are missing
+* comeback discounts
+* seasonal offers
+* new product updates
+* simple reactivation campaigns
+
+Not every inactive customer will return, but identifying this group helps the business understand which customers may need extra attention.
+
+# Why This Adds Value
+
+Customer status makes the analysis more practical because it turns raw customer numbers into business actions.
+
+Instead of only saying a customer has a certain frequency, recency, or monetary value, the dashboard gives that customer a status that is easier to understand.
+
+This could help a business decide:
+
+* who to reward
+* who to target with coupons
+* who may need reminders
+* who is at risk of leaving
+* who has the potential to become more valuable
+
+This makes the customer segmentation part of the project useful for customer retention, marketing, and sales planning.
+
 ![Customer Groups](assets/customer_groups_total_value.png)
 
 # Customer Segmentation Methodology
@@ -359,6 +441,39 @@ To fix it, I rebuilt the regression dataset so that each invoice appeared only o
 This made the final model score lower, but the result was more honest and reliable.
 
 This was an important learning point because a good model is not just the one with the highest score. It needs to be a result that can be trusted.
+
+# Why Regression Was Used
+
+The regression model was included to test whether previous customer behaviour could help predict future order value.
+
+The idea was that if a business can estimate the likely value of a future order, it may be able to make better decisions around customer targeting, sales planning, and marketing campaigns.
+
+The model used previous customer information such as:
+
+* previous monetary value
+* previous average order value
+* previous order count
+* previous order value
+* days since previous order
+* country
+
+These features were used because they represent information that could be known before a future order happens.
+
+# Business Use of Regression
+
+In a real business, this type of model could help estimate which customers are more likely to place higher-value orders.
+
+For example, if the business had last year’s customer behaviour and order data, a regression model could be trained on those figures and then used to help predict future order values.
+
+This could support decisions such as:
+
+* which customers should receive higher-value offers
+* which customers may be worth targeting with premium product recommendations
+* which customer groups may generate stronger future revenue
+* how future sales targets could be estimated
+* how marketing campaigns could be focused on customers with higher predicted order value
+
+The model would not replace business judgement, but it could help support planning.
 
 # Final Regression Results
 
