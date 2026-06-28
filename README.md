@@ -273,3 +273,48 @@ For example:
 This makes the dashboard more useful for business decision-making because it turns numbers into customer groups that are easier to understand.
 
 ![Customer Groups](assets/customer_groups_total_value.png)
+
+# Customer Segmentation Methodology
+
+Customer groups were created using quantile-based thresholds.
+
+This means the thresholds came from the dataset itself instead of being chosen randomly.
+
+The logic was:
+
+* High frequency customers were more likely to be loyal.
+* Low recency customers were more recent because fewer days had passed since their last purchase.
+* High average order value customers spent more per order.
+* High monetary value customers spent more overall.
+
+This method made the segmentation easier to explain from a business point of view.
+
+The goal was not just to create technical labels. The goal was to create customer groups that could be understood quickly in the dashboard.
+
+# K-Means Clustering
+
+K-Means clustering was tested as an unsupervised learning method.
+
+The model used:
+
+* Frequency
+* Recency
+* AverageOrderValue
+* MonetaryValue
+
+The data was scaled using StandardScaler because K-Means is affected by differences in scale. For example, monetary values can be much larger than recency or frequency values.
+
+The model used five clusters so it could be compared with the five customer status groups.
+
+The clustering output was checked using:
+
+* crosstab comparison
+* cluster mapping
+* accuracy comparison
+* silhouette score
+* confusion matrix
+* classification report
+
+K-Means was not treated as the final source of truth for customer status. It was used as a comparison to see whether the natural clusters in the data matched the rule-based customer groups.
+
+This was useful because business-defined customer groups and mathematical clusters do not always match perfectly.
