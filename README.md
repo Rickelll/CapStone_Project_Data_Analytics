@@ -157,16 +157,58 @@ TotalQuantity - total number of items bought by the customer
 
 For invoice-level analysis, I also created running customer features:
 
-OrderCount
-MonetaryValue
-AverageOrderValue
+* OrderCount
+* MonetaryValue
+* AverageOrderValue
 
 For the regression model, I created previous behaviour features:
 
-PreviousMonetaryValue
-PreviousAverageOrderValue
-PreviousOrderCount
-PreviousOrderValue
-DaysSincePreviousOrder
+* PreviousMonetaryValue
+* PreviousAverageOrderValue
+* PreviousOrderCount
+* PreviousOrderValue
+* DaysSincePreviousOrder
 
 These previous behaviour features were important because the model should only use information that would be known before the current order.
+
+# Sales Analysis
+
+The sales analysis focused on completed purchases, cancellations, invoice values, and monthly revenue trends.
+
+The main sales results were:
+
+* Gross Purchase Revenue: €8,911,407.90
+* Revenue Lost Through Cancellations: €611,342.09
+* Net Revenue: €8,300,065.81
+* Average Recorded Purchase Invoice Value: €480.87
+* Average Cancelled Invoice Value: €167.31
+* Average Completed Purchase Invoice Value: €464.75
+* Total Invoices: 22,186
+* Net Average Invoice Value: €374.11
+* Largest Completed Purchase Invoice: €31,698.16
+* Smallest Completed Purchase Invoice: €0.38
+* Largest Cancelled Invoice: €168,469.60
+* Smallest Cancelled Invoice: €0.39
+
+The difference between gross purchase revenue and completed purchase revenue was important. Some purchases were later cancelled, so using only gross revenue would have overstated the sales performance.
+
+This is why the final dashboard shows both revenue and cancellation impact.
+
+# Monthly Sales Trend
+
+Monthly sales were analysed to understand whether the business was growing or declining over time.
+
+During this part of the project, I found that the final month appeared incomplete. Including this final incomplete month made the trend look misleading, so I excluded it from the growth comparison.
+
+The completed monthly sales trend showed strong growth:
+
+* First complete month revenue: €560,568.68
+* Last complete month revenue: €1,153,375.54
+* Revenue change: €592,806.86
+* Revenue growth: 105.75%
+
+This showed that sales increased strongly over the analysed period.
+
+Cancellations were also analysed by month. They caused revenue loss, but they did not stop the overall positive sales trend.
+
+![Monthly Revenue vs Cancellation Loss](assets/monthly_revenue_vs_cancellation_loss.PNG)
