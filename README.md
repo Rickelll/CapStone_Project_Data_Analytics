@@ -387,3 +387,20 @@ Future model improvements could include:
 * customer location patterns
 
 ![Regression Predictions vs Actual](assets/customer_groups_total_value.png)
+
+# Credits
+
+Dataset source: Online retail/customer transaction dataset used for educational analysis.
+link to kaggle dataset ----> 'https://www.kaggle.com/code/farzadnekouei/customer-segmentation-recommendation-system'
+
+Tools and libraries used:
+
+Python
+Pandas
+Scikit-learn
+Matplotlib
+Tableau
+Streamlit
+Streamlit Option Menu
+Git / GitHub
+Jupyter Notebook
