@@ -176,6 +176,8 @@ Product revenue was also analysed to identify the highest earning products. This
 
 ![Top Products by Completed Revenue](assets/top_10_products_by_completed_revenue.png)
 
+![Sales Dashboard](assets/sales_dashboard.png)
+
 # Customer Segmentation
 
 Customer segmentation was one of the most important parts of the project because sales totals do not explain what type of customers created the revenue.
@@ -342,6 +344,8 @@ The final model had limited predictive power. It predicted smaller order values 
 
 In a real business, this type of model could still support planning by estimating which customers may place higher-value orders, which customer groups may generate stronger future revenue, and how marketing campaigns could be targeted.
 
+![Regression Predictions vs Actual](assets/customer_groups_total_value.png)
+
 # Regression Data Leakage Fix
 
 One of the biggest bugs in the project happened during regression modelling.
@@ -419,9 +423,9 @@ Future model improvements could include:
 * more detailed product behaviour
 * customer location patterns
 
-![Regression Predictions vs Actual](assets/customer_groups_total_value.png)
-
 # Ethics, Privacy and GDPR
+
+![Regression Dashboard](assets/regression_dashboard.png)
 
 The dataset uses anonymous customer IDs instead of customer names, phone numbers, emails, or addresses.
 
