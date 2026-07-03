@@ -3,6 +3,7 @@ import pandas as pd
 from streamlit_option_menu import option_menu
 import streamlit.components.v1 as components
 import re
+import html
 
 st.set_page_config(
     page_title="Capstone Dashboard",
@@ -267,6 +268,14 @@ div[data-testid="stDialog"] h3 {
     color: #F8FAFC !important;
 }
 </style>
+<style>
+.chart-title {
+    text-align: center;
+    font-weight: 600;
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+</style>
 """, unsafe_allow_html=True)
 
 st.sidebar.header('Customer Segmentation Analysis')
@@ -375,96 +384,127 @@ def section_header(text):
     )
 
 
-def clean_tableau_embed(embed_code, height):
-    # Hide Tableau controls
-    embed_code = re.sub(
-        r"<param\s+name=['\"]tabs['\"]\s+value=['\"]yes['\"]\s*/?>",
-        "<param name='tabs' value='no' />",
-        embed_code,
-        flags=re.IGNORECASE
-    )
-
-    embed_code = re.sub(
-        r"<param\s+name=['\"]toolbar['\"]\s+value=['\"]yes['\"]\s*/?>",
-        "<param name='toolbar' value='no' />",
-        embed_code,
-        flags=re.IGNORECASE
-    )
-
-    embed_code = re.sub(
-        r"<param\s+name=['\"]display_count['\"]\s+value=['\"]yes['\"]\s*/?>",
-        "<param name='display_count' value='no' />",
-        embed_code,
-        flags=re.IGNORECASE
-    )
-
-    # Add showVizHome=no
-    if "showVizHome" not in embed_code:
-        embed_code = re.sub(
-            r"(<param\s+name=['\"]embed_code_version['\"]\s+value=['\"]3['\"]\s*/?>)",
-            r"\1 <param name='showVizHome' value='no' />",
-            embed_code,
-            count=1,
-            flags=re.IGNORECASE
-        )
-
-    # Get the Tableau placeholder ID
-    id_match = re.search(
-        r"<div class=['\"]tableauPlaceholder['\"] id=['\"]([^'\"]+)['\"]",
-        embed_code
-    )
-
-    if not id_match:
-        return embed_code
-
-    viz_id = id_match.group(1)
-
-    # Replace Tableau's generated sizing script with our own consistent one
-    new_script = f"""
-    <script type='text/javascript'>
-        var divElement = document.getElementById('{viz_id}');
-        divElement.style.width = '100%';
-        divElement.style.margin = '0 auto';
-        divElement.style.textAlign = 'center';
-
-        var vizElement = divElement.getElementsByTagName('object')[0];
-        vizElement.style.width = '100%';
-        vizElement.style.height = '{height}px';
-        vizElement.style.margin = '0 auto';
-        vizElement.style.display = 'block';
-
-        var scriptElement = document.createElement('script');
-        scriptElement.src = 'https://public.tableau.com/javascripts/api/viz_v1.js';
-        vizElement.parentNode.insertBefore(scriptElement, vizElement);
-    </script>
-    """
-
-    embed_code = re.sub(
-        r"<script type=['\"]text/javascript['\"]>[\s\S]*?</script>",
-        new_script,
-        embed_code,
-        flags=re.IGNORECASE
-    )
-
-    return embed_code
-
 def normal_centered_text(text):
     st.markdown(
         f"<p class='center-text'>{text}</p>",
         unsafe_allow_html=True
     )
 
-def tableau_card(title, embed_code, height=250):
-    embed_code = clean_tableau_embed(embed_code, height)
+def clean_tableau_embed(embed_code):
+    """
+    Forces Tableau embeds to hide sheet tabs, toolbar, and Tableau home controls.
+    Works better for embeds that still show tabs on some sheets.
+    """
 
-    st.markdown(
-        f"<div class='chart-title'>{title}</div>",
-        unsafe_allow_html=True
-    )
+    # Remove existing Tableau params that may conflict
+    params_to_remove = [
+        "tabs",
+        "toolbar",
+        "showVizHome",
+        "display_count",
+        "showShareOptions"
+    ]
+
+    for param in params_to_remove:
+        embed_code = re.sub(
+            rf"<param\s+name=['\"]{param}['\"].*?>",
+            "",
+            embed_code,
+            flags=re.IGNORECASE
+        )
+
+    # Replace URL-style Tableau options if they already exist
+    replacements = {
+        r":tabs=(yes|true|1)": ":tabs=no",
+        r":toolbar=(yes|true|1)": ":toolbar=no",
+        r":showVizHome=(yes|true|1)": ":showVizHome=no",
+        r":display_count=(yes|true|1)": ":display_count=no"
+    }
+
+    for pattern, replacement in replacements.items():
+        embed_code = re.sub(
+            pattern,
+            replacement,
+            embed_code,
+            flags=re.IGNORECASE
+        )
+
+    # Add clean Tableau params
+    clean_params = """
+        <param name="tabs" value="no" />
+        <param name="toolbar" value="no" />
+        <param name="showVizHome" value="no" />
+        <param name="display_count" value="no" />
+        <param name="showShareOptions" value="false" />
+    """
+
+    # Insert before </object>
+    if "</object>" in embed_code:
+        embed_code = embed_code.replace("</object>", clean_params + "</object>")
+    else:
+        embed_code += clean_params
+
+    return embed_code
+
+def tableau_kpi_card(title, embed_code, height=260):
+    cleaned_embed = clean_tableau_embed(embed_code)
 
     with st.container(border=True):
+
+        st.markdown(
+            f"""
+            <div style="
+                width: 100%;
+                text-align: center;
+                font-weight: 700;
+                font-size: 15px;
+                line-height: 1.2;
+                margin-bottom: 6px;
+                min-height: 36px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            ">
+                {title}
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+
         components.html(
-            embed_code,
+            cleaned_embed,
+            height=height,
+            scrolling=False
+        )
+
+def tableau_card(title, embed_code, height):
+    cleaned_embed = clean_tableau_embed(embed_code)
+
+    with st.container(border=True):
+
+        # Escapes title safely, then forces centre alignment
+        safe_title = html.escape(title)
+
+        st.markdown(
+            f"""
+            <div style="
+                width: 100%;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                text-align: center;
+                font-weight: 700;
+                font-size: 18px;
+                margin-bottom: 12px;
+            ">
+                {safe_title}
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+
+        components.html(
+            cleaned_embed,
             height=height,
             scrolling=False
         )
@@ -847,16 +887,14 @@ def sales_report():
 
     col1, col2, col3 = st.columns(3)
 
-    left, middle, right = st.columns([1, 10, 1])
-
     with col1:
-        tableau_card("Gross Revenue", gross_revenue_kpi, height=220)
+        tableau_card("Gross Revenue", gross_revenue_kpi, height=300)
 
     with col2:
-        tableau_card('Net Revenue', net_revenue_kpi, height=220)
+        tableau_card('Net Revenue', net_revenue_kpi, height=300)
 
     with col3:
-        tableau_card('Revenue Lost', revenue_lost_kpi, height=220)
+        tableau_card('Revenue Lost', revenue_lost_kpi, height=300)
 
     st.divider()
 
@@ -865,13 +903,13 @@ def sales_report():
     col4, col5, col6 = st.columns(3)
 
     with col4:
-        tableau_card('Revenue Growth', revenue_growth_kpi, height=220)
+        tableau_card('Revenue Growth', revenue_growth_kpi, height=300)
 
     with col5:
-        tableau_card('Average Invoices', average_invoices_kpi, height=220)
+        tableau_card('Average Invoices', average_invoices_kpi, height=300)
 
     with col6:
-        tableau_card('Total Invoices', total_invoices_kpi, height=220)
+        tableau_card('Total Invoices', total_invoices_kpi, height=300)
 
     st.divider()
 
@@ -886,10 +924,10 @@ def sales_report():
     col7, col8 = st.columns(2)
 
     with col7:
-        tableau_card('Top 10 Countries by Completed Revenue', top10_countries_by_completed_revenue, height=500)
+        tableau_card('Top 10 Countries by Completed Revenue', top10_countries_by_completed_revenue, height=485)
 
     with col8:
-        tableau_card('Top 10 Products by Completed Revenue', top10_products_by_completed_revenue, height=500)
+        tableau_card('Top 10 Products by Completed Revenue', top10_products_by_completed_revenue, height=485)
 
     st.divider()
 
@@ -907,19 +945,21 @@ def customer_segmentation():
 
     section_header("KPI Overview")
 
-    col1, col2, col3, col4 = st.columns(4, gap="large")
+    left, middle, right = st.columns([2, 2, 2], gap="small")
 
-    with col1:
-        tableau_card('Total Customers', total_customers_kpi, height=220)
+    with middle:
+        tableau_kpi_card("Total Customers", total_customers_kpi, height=300)
+
+    col2, col3, col4 = st.columns(3, gap="small")
 
     with col2:
-        tableau_card('Vip Customers', vip_customers_kpi, height=220)
+        tableau_kpi_card("VIP Customers", vip_customers_kpi, height=300)
 
     with col3:
-        tableau_card('Loyal Customers',loyal_customers_kpi, height=220)
+        tableau_kpi_card("Loyal Customers", loyal_customers_kpi, height=300)
 
     with col4:
-        tableau_card('Risk of Losing Customers', at_risk_customers_kpi, height=220)
+        tableau_kpi_card("At-Risk Customers", at_risk_customers_kpi, height=300)
 
     st.divider()
 
@@ -928,10 +968,10 @@ def customer_segmentation():
     col5, col6 = st.columns(2, gap="large")
 
     with col5:
-        tableau_card('Customer Group Monetary Value', customer_group_total_value, height=600)
+        tableau_card('Customer Group Monetary Value', customer_group_total_value, height=475)
 
     with col6:
-        tableau_card('Average Value Per Customer Group', customer_group_total_per_customer, height=600)
+        tableau_card('Average Value Per Customer Group', customer_group_total_per_customer, height=475)
 
     st.divider()
 
@@ -997,19 +1037,19 @@ def regression_model():
     col1, col2, col3 = st.columns(3)
 
     with col1:
-        tableau_card('Mean Absolute Error', mean_absolute_error_kpi, height=220)
+        tableau_card('Mean Absolute Error', mean_absolute_error_kpi, height=300)
 
     with col2:
-        tableau_card('RMSE' , rmse_kpi, height=220)
+        tableau_card('RMSE' , rmse_kpi, height=300)
 
     with col3:
-        tableau_card('R2 Score',r2_score_kpi, height=220)
+        tableau_card('R2 Score',r2_score_kpi, height=300)
 
     st.divider()
 
     section_header('Actual Order Value vs Predicted Order Value')
 
-    tableau_card('Regression Model', regression_model_prediction, height=700)
+    tableau_card('Regression Model', regression_model_prediction, height=675)
 
     st.divider()
 
