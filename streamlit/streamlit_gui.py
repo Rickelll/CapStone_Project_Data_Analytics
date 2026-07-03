@@ -18,8 +18,8 @@ st.markdown("""
 
 /* Full app background */
 .stApp {
-    background-color: #0F172A;
-    color: #F8FAFC;
+    background-color: #0F172A !important;
+    color: #F8FAFC !important;
 }
 
 /* Main content spacing */
@@ -32,20 +32,20 @@ st.markdown("""
 
 /* Top bar */
 header[data-testid="stHeader"] {
-    background-color: #000000;
+    background-color: #000000 !important;
 }
 
 /* Sidebar */
 section[data-testid="stSidebar"] {
-    background-color: #000000;
-    border-right: 1px solid #1E293B;
+    background-color: #000000 !important;
+    border-right: 1px solid #1E293B !important;
 }
 
 section[data-testid="stSidebar"] * {
     color: #F8FAFC !important;
 }
 
-/* Hide Streamlit menu/footer if you want cleaner app */
+/* Hide Streamlit menu/footer */
 #MainMenu {
     visibility: hidden;
 }
@@ -73,18 +73,18 @@ footer {
     font-size: 44px;
     font-weight: 850;
     margin-bottom: 10px;
-    color: #F8FAFC;
+    color: #F8FAFC !important;
 }
 
 .page-header p {
     font-size: 18px;
-    color: #CBD5E1;
+    color: #CBD5E1 !important;
     margin: 0;
 }
 
 .section-heading {
     text-align: center;
-    color: #F8FAFC;
+    color: #F8FAFC !important;
     font-size: 30px;
     font-weight: 800;
     margin-top: 35px;
@@ -93,34 +93,17 @@ footer {
 
 .center-text {
     text-align: center;
-    color: #CBD5E1;
+    color: #CBD5E1 !important;
     font-size: 17px;
     line-height: 1.6;
 }
 
-/* ================================
-   CARDS / CHART AREAS
-================================ */
-
 .chart-title {
     text-align: center;
-    color: #F8FAFC;
-    font-size: 19px;
-    font-weight: 800;
+    color: #F8FAFC !important;
+    font-size: 18px;
+    font-weight: 700;
     margin-bottom: 10px;
-}
-
-/* Streamlit bordered containers */
-div[data-testid="stVerticalBlockBorderWrapper"] {
-    background-color: #1E293B !important;
-    border: 1px solid #334155 !important;
-    border-radius: 16px !important;
-    box-shadow: 0px 4px 14px rgba(0,0,0,0.28);
-}
-
-/* Divider */
-hr {
-    border-color: #334155 !important;
 }
 
 /* ================================
@@ -128,12 +111,87 @@ hr {
 ================================ */
 
 h1, h2, h3, h4, h5, h6, p, label, span {
-    color: #F8FAFC;
+    color: #F8FAFC !important;
 }
 
-/* Muted markdown text */
 div[data-testid="stMarkdownContainer"] {
-    color: #CBD5E1;
+    color: #CBD5E1 !important;
+}
+
+a {
+    color: #38BDF8 !important;
+}
+
+/* ================================
+   STREAMLIT CONTAINERS / CARDS
+================================ */
+
+/* Streamlit bordered containers */
+div[data-testid="stVerticalBlockBorderWrapper"] {
+    background-color: #1E293B !important;
+    border: 1px solid #334155 !important;
+    border-radius: 16px !important;
+    box-shadow: 0px 4px 14px rgba(0,0,0,0.28) !important;
+}
+
+/* If a white border still shows around Tableau, change border above to none */
+
+/* Divider */
+hr {
+    border-color: #334155 !important;
+}
+
+/* ================================
+   TABLEAU / IFRAME FIX
+================================ */
+
+/* Remove default iframe border/background */
+iframe {
+    border: none !important;
+    outline: none !important;
+    background-color: #0F172A !important;
+}
+
+/* Streamlit iframe wrapper */
+div[data-testid="stIFrame"] {
+    border: none !important;
+    outline: none !important;
+    background-color: #0F172A !important;
+}
+
+/* Streamlit component wrapper */
+div[data-testid="stElementContainer"] {
+    border: none !important;
+    outline: none !important;
+    background-color: transparent !important;
+}
+
+/* Tableau card wrapper if you use class='tableau-card' */
+.tableau-card {
+    background-color: #0F172A !important;
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    overflow: hidden !important;
+    border-radius: 0 !important;
+}
+
+/* Tableau objects inside the card */
+.tableau-card iframe,
+.tableau-card object,
+.tableau-card .tableauPlaceholder {
+    border: none !important;
+    outline: none !important;
+    background-color: #0F172A !important;
+}
+
+/* Tableau placeholder itself */
+.tableauPlaceholder {
+    border: none !important;
+    outline: none !important;
+    background-color: #0F172A !important;
 }
 
 /* ================================
@@ -160,10 +218,20 @@ div[data-baseweb="select"] > div {
     border-radius: 10px !important;
 }
 
-/* Multiselect */
+div[data-baseweb="select"] span {
+    color: #F8FAFC !important;
+}
+
+/* Dropdown menu */
+div[data-baseweb="popover"] {
+    background-color: #1E293B !important;
+    color: #F8FAFC !important;
+}
+
+/* Multiselect tags */
 div[data-baseweb="tag"] {
     background-color: #2563EB !important;
-    color: white !important;
+    color: #FFFFFF !important;
 }
 
 /* ================================
@@ -171,18 +239,18 @@ div[data-baseweb="tag"] {
 ================================ */
 
 .stButton > button {
-    background-color: #2563EB;
-    color: #FFFFFF;
-    border: none;
-    border-radius: 12px;
-    padding: 0.65rem 1.3rem;
-    font-weight: 800;
-    transition: 0.2s ease;
+    background-color: #2563EB !important;
+    color: #FFFFFF !important;
+    border: none !important;
+    border-radius: 12px !important;
+    padding: 0.65rem 1.3rem !important;
+    font-weight: 800 !important;
+    transition: 0.2s ease !important;
 }
 
 .stButton > button:hover {
-    background-color: #1D4ED8;
-    color: #FFFFFF;
+    background-color: #1D4ED8 !important;
+    color: #FFFFFF !important;
     transform: translateY(-1px);
 }
 
@@ -191,11 +259,11 @@ div[data-baseweb="tag"] {
 ================================ */
 
 div[data-testid="stMetric"] {
-    background-color: #1E293B;
-    border: 1px solid #334155;
-    border-radius: 16px;
-    padding: 18px;
-    box-shadow: 0px 4px 14px rgba(0,0,0,0.25);
+    background-color: #1E293B !important;
+    border: 1px solid #334155 !important;
+    border-radius: 16px !important;
+    padding: 18px !important;
+    box-shadow: 0px 4px 14px rgba(0,0,0,0.25) !important;
 }
 
 div[data-testid="stMetricLabel"] {
@@ -211,10 +279,10 @@ div[data-testid="stMetricValue"] {
 ================================ */
 
 div[data-testid="stDataFrame"] {
-    border: 1px solid #334155;
-    border-radius: 14px;
-    overflow: hidden;
-    box-shadow: 0px 4px 14px rgba(0,0,0,0.25);
+    border: 1px solid #334155 !important;
+    border-radius: 14px !important;
+    overflow: hidden !important;
+    box-shadow: 0px 4px 14px rgba(0,0,0,0.25) !important;
 }
 
 /* ================================
@@ -222,27 +290,24 @@ div[data-testid="stDataFrame"] {
 ================================ */
 
 div[data-testid="stAlert"] {
-    border-radius: 14px;
-    border: 1px solid #334155;
+    border-radius: 14px !important;
+    border: 1px solid #334155 !important;
 }
 
 /* ================================
-   EXPANDERS / DIALOGS
+   EXPANDERS
 ================================ */
 
 div[data-testid="stExpander"] {
-    background-color: #1E293B;
-    border: 1px solid #334155;
-    border-radius: 14px;
+    background-color: #1E293B !important;
+    border: 1px solid #334155 !important;
+    border-radius: 14px !important;
 }
 
-/* Make links visible */
-a {
-    color: #38BDF8 !important;
-}
-</style>
-<style>
-/* Fix Streamlit dialog / popup colours */
+/* ================================
+   DIALOG / POPUP FIX
+================================ */
+
 div[data-testid="stDialog"] {
     background-color: #1E293B !important;
     color: #F8FAFC !important;
@@ -257,7 +322,7 @@ div[data-testid="stDialog"] section {
 }
 
 div[data-testid="stDialog"] div {
-    background-color: #1E293B;
+    background-color: #1E293B !important;
 }
 
 div[data-testid="stDialog"] p,
@@ -267,14 +332,28 @@ div[data-testid="stDialog"] h2,
 div[data-testid="stDialog"] h3 {
     color: #F8FAFC !important;
 }
-</style>
-<style>
-.chart-title {
-    text-align: center;
-    font-weight: 600;
-    font-size: 18px;
-    margin-bottom: 10px;
+
+/* ================================
+   SCROLLBAR
+================================ */
+
+::-webkit-scrollbar {
+    width: 10px;
 }
+
+::-webkit-scrollbar-track {
+    background: #0F172A;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #334155;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #475569;
+}
+
 </style>
 """, unsafe_allow_html=True)
 
@@ -915,7 +994,7 @@ def sales_report():
 
     section_header("MAIN CHART")
 
-    tableau_card('Monthly Revenue', monthly_completed_cancelled_revenue, height=700)
+    tableau_card('Monthly Revenue', monthly_completed_cancelled_revenue, height=1020)
 
     st.divider()
 
@@ -1063,8 +1142,6 @@ def regression_model():
         "The model predicts smaller order values better, while larger high-value orders are harder to predict accurately. "
         "This suggests that more detailed features, such as product categories or seasonal trends, could improve future predictions."
     )
-
-
 
 if __name__ == '__main__':
     if selected=="Home":
