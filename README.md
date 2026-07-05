@@ -88,6 +88,8 @@ The reversed purchases were saved in matched_reversed_invoices.csv, and the fina
 
 This made the revenue analysis more realistic because fully reversed purchases were no longer counted as successful completed sales.
 
+![Data Links](assets/data_linked.PNG)
+
 # Why These Values Were Analysed
 
 I chose the main values in the project because each one answered a different business question.
@@ -175,6 +177,8 @@ Country revenue was analysed to find out which countries generated the most comp
 Product revenue was also analysed to identify the highest earning products. This helped show which products contributed most to successful completed sales.
 
 ![Top Products by Completed Revenue](assets/top_10_products_by_completed_revenue.png)
+
+# Sales Dashboard
 
 ![Sales Dashboard](assets/sales_dashboard.png)
 
@@ -344,7 +348,7 @@ The final model had limited predictive power. It predicted smaller order values 
 
 In a real business, this type of model could still support planning by estimating which customers may place higher-value orders, which customer groups may generate stronger future revenue, and how marketing campaigns could be targeted.
 
-![Regression Predictions vs Actual](assets/customer_groups_total_value.png)
+![Regression Predictions vs Actual](assets/regression_predictions_vs_actaul.png)
 
 # Regression Data Leakage Fix
 
@@ -423,9 +427,11 @@ Future model improvements could include:
 * more detailed product behaviour
 * customer location patterns
 
-# Ethics, Privacy and GDPR
+# Regression Dashboard
 
 ![Regression Dashboard](assets/regression_dashboard.png)
+
+# Ethics, Privacy and GDPR
 
 The dataset uses anonymous customer IDs instead of customer names, phone numbers, emails, or addresses.
 
@@ -478,8 +484,6 @@ The Tableau visuals include:
 * customer value charts
 * actual vs predicted regression chart
 
-Some Tableau Public embed formatting issues remained, such as small toolbar or spacing limitations. These were accepted as visual limitations because the charts still communicated the analysis clearly.
-
 # Bugs, Challenges and Fixes
 Several issues came up during the project:
 
@@ -488,7 +492,6 @@ Several issues came up during the project:
 * Cancelled orders had to be separated from normal purchases because they represented revenue loss rather than completed sales.
 * Some large purchase invoices were later matched by cancellation invoices, so reversed purchases were removed from the completed purchase dataset.
 * Product-level duplicate rows caused a data leakage issue in the first regression model, so the regression dataset was rebuilt at invoice level.
-* Tableau Public embeds created some layout issues inside Streamlit.
 
 These challenges helped improve the project because they forced me to check whether the analysis was reliable instead of just accepting the first result.
 
@@ -505,7 +508,6 @@ This project has several limitations:
 * High-value orders were difficult for the model to predict.
 * Previous customer behaviour alone was not enough for strong prediction.
 * K-Means clusters did not perfectly match business-defined customer groups.
-* Tableau Public embeds created some visual formatting limitations.
 * The project used static CSV files rather than a live database.
 
 These limitations are important because they show that the results should be interpreted carefully.
